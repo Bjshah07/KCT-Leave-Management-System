@@ -1,6 +1,7 @@
 import React from "react";
 import slider from "../assets/Main-slider.jpg";
 import logo from "../assets/KC_logo-icon.png";
+import { FaChevronDown } from "react-icons/fa";
 
 function Signup() {
   return (
@@ -17,13 +18,13 @@ function Signup() {
         <div className="bg-gray-100 border-2 border-[#2354A2] rounded-3xl shadow-lg w-125 overflow-hidden">
           {/* Header */}
           <div className="flex items-center gap-4 bg-gray-200 p-6 border-b-2 border-[#2354A2]">
-            <div className="bg-[#2354A2]  rounded-md">
+            <div className="bg-[#2354A2] rounded-md">
               <img src={logo} alt="logo" className="w-10 h-10" />
             </div>
 
             <div>
               <h1 className="text-2xl font-bold text-[#2354A2]">
-                Welcome back
+                Create your account
               </h1>
               <p className="text-sm font-medium text-[#2354A2]">
                 Sign up to access your leave management portal
@@ -69,7 +70,6 @@ function Signup() {
                   className="w-full px-4 py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2]"
                 />
               </div>
-
               {/* Phone */}
               <div>
                 <label className="block text-[#2354A2] mb-2 font-medium">
@@ -81,27 +81,30 @@ function Signup() {
                   name="phone"
                   defaultValue="+91"
                   required
+                  placeholder="Enter phone number"
                   className="w-full px-4 py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2]"
                 />
               </div>
-
               {/* Designation */}
               <div>
                 <label className="block text-[#2354A2] mb-2 font-medium">
                   Designation
                 </label>
 
-                <select
-                  name="designation"
-                  required
-                  className="w-full px-4 py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2]"
-                >
-                  <option>Select designation</option>
-                  <option>Developer</option>
-                  <option>Manager</option>
-                  <option>HR</option>
-                  <option>Intern</option>
-                </select>
+                <div className="relative">
+                  <select
+                    name="designation"
+                    required
+                    className="w-full px-4 py-3 border border-[#2354A2] rounded-xl appearance-none bg-white  focus:ring-2 focus:ring-[#2354A2] focus:outline-none  "
+                  >
+                    <option>Select designation</option>
+                    <option>Developer</option>
+                    <option>Manager</option>
+                    <option>HR</option>
+                    <option>Intern</option>
+                  </select>
+                  <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2354A2] pointer-events-none" />
+                </div>
               </div>
 
               {/* Address */}
