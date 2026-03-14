@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import slider from "../assets/Main-slider.jpg";
 import logo from "../assets/KC_logo-icon.png";
 
@@ -84,9 +85,12 @@ function Login() {
             </form>
 
             {/* Footer */}
-            <p className="text-center font-semibold text-gray-800 cursor-pointer hover:text-[#2354A2]">
+            <Link
+              to="/signup"
+              className="text-center font-semibold text-gray-800 cursor-pointer hover:text-[#2354A2] block"
+            >
               New User?
-            </p>
+            </Link>
           </div>
         </div>
       </div>
