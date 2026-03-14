@@ -1,12 +1,14 @@
-import './App.css'
+import "./App.css";
+import Login from "./pages/Login";
+import Signup from "./pages/SignUp";
 
 function App() {
-
   return (
     <>
-      <h1 className='text-2xl bg-amber-400'>Hello</h1>
+      
+      <Signup/>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
