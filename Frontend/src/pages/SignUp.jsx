@@ -5,35 +5,35 @@ import { FaChevronDown } from "react-icons/fa";
 
 function Signup() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="fixed min-h-screen min-w-screen overflow-hidden">
       {/* Background Image */}
       <img
         src={slider}
         alt="background"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-center"
       />
 
       {/* Signup Container */}
-      <div className="relative flex items-center justify-center min-h-screen">
-        <div className="bg-gray-100 border-2 border-[#2354A2] rounded-3xl shadow-lg w-125 overflow-hidden">
+      <div className="sticky flex items-center justify-center min-h-screen px-4">
+        <div className="bg-gray-100/70 text-black border-2 border-[#2354A2] rounded-3xl shadow-lg w-full max-w-md md:max-w-lg lg:max-w-xl overflow-hidden">
           {/* Header */}
-          <div className="flex items-center gap-4 bg-gray-200 p-6 border-b-2 border-[#2354A2]">
-            <div className="bg-[#2354A2] rounded-md">
-              <img src={logo} alt="logo" className="w-10 h-10" />
+          <div className="flex items-center gap-4 bg-gray-200 p-5 md:p-6 border-b-2 border-[#2354A2]">
+            <div className="bg-[#2354A2]  flex items-center justify-center">
+              <img src={logo} alt="logo" className="w-8 h-8 object-contain" />
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-[#2354A2]">
+              <h1 className="text-xl md:text-2xl font-bold text-[#2354A2]">
                 Create your account
               </h1>
-              <p className="text-sm font-medium text-[#2354A2]">
+              <p className="text-xs md:text-sm font-medium text-[#2354A2]">
                 Sign up to access your leave management portal
               </p>
             </div>
           </div>
 
           {/* Form */}
-          <div className="p-8">
+          <div className="p-6 md:p-8">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -95,7 +95,7 @@ function Signup() {
                   <select
                     name="designation"
                     required
-                    className="w-full px-4 py-3 border border-[#2354A2] rounded-xl appearance-none bg-white  focus:ring-2 focus:ring-[#2354A2] focus:outline-none  "
+                    className="w-full px-4 py-3 border border-[#2354A2] rounded-xl appearance-none  focus:ring-2 focus:ring-[#2354A2] focus:outline-none  "
                   >
                     <option>Select designation</option>
                     <option>Developer</option>
