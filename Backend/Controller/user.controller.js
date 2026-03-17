@@ -38,7 +38,7 @@ const handleUserSignup = async (req, res) => {
             designation,
             address
         });
-
+        console.log(user, logInID, logInPassword)
         res.status(201).json({
             message: "User registered successfully! Use these credentials to login:",
             credentials: {
@@ -94,7 +94,7 @@ const handleUserLogin = async (req, res) => {
         });
 
         const userData = await User.findById(user._id).select('-logInPassword');
-        
+
         res.status(200).json({
             message: "Login successful",
             data: userData

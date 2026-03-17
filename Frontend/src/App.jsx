@@ -1,22 +1,29 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import { useAuth } from './contexts/AuthContext';
+import Dashboard from "./pages/Dashboard";
 import SignUp from "./pages/SignUp";
 import PageNotFound from "./PageNotFound";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
 
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="*" element={<PageNotFound />} />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={<ProtectedRoute><PageNotFound /></ProtectedRoute>} />
         </Routes>
-      </BrowserRouter>
-    </>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
