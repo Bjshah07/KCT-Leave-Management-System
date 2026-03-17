@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import slider from "../assets/Main-slider.jpg";
 import logo from "../assets/KC_logo-icon.png";
@@ -15,7 +14,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -38,7 +37,7 @@ function Login() {
 
       toast.success("Login successful! Redirecting...", { autoClose: 2000 });
       const userData = response.data.data;
-      login(userData);
+
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       console.error("Login error:", err);

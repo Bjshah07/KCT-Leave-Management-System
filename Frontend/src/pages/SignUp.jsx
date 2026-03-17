@@ -31,11 +31,11 @@ function Signup() {
     toast.dismiss();
 
     try {
-      const response = await axios.post("http://localhost:5000/signup", formData, { 
-        withCredentials: true 
+      const response = await axios.post("http://localhost:5000/signup", formData, {
+        withCredentials: true
       });
-      
-      toast.success(`Account created! Login ID: ${response.data.credentials.logInID}, Password: ${response.data.credentials.logInPassword}`, { autoClose: 2000 });
+
+      toast.success("Account created successfully! Check your email for login credentials.", { autoClose: 2000 });
       setTimeout(() => {
         navigate('/login');
       }, 2000);
@@ -53,19 +53,19 @@ function Signup() {
 
       {/* Form Container */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-2">
-        <div className="bg-white/95 backdrop-blur-md border-2 border-[#2354A2] rounded-2xl shadow-xl w-[340px] md:w-[380px] overflow-hidden">
-          
+        <div className="bg-white/95 backdrop-blur-md border-2 border-[#2354A2] rounded-2xl shadow-xl w-85 md:w-95 overflow-hidden">
+
           {/* Header */}
           <div className="p-4 border-b border-[#2354A2]/30">
             <div className="flex items-center gap-2">
-              <div className="bg-[#2354A2] p-2 rounded-lg">
+              <div className="bg-[#2354A2]  rounded-lg">
                 <img src={logo} alt="logo" className="w-8 h-8" />
               </div>
               <div className="flex-1">
                 <h1 className="text-lg font-bold text-[#2354A2]">
                   Sign Up
                 </h1>
-                <p className="text-xs text-gray-600 mt-1">
+                <p className="text-xs text-gray-600 ">
                   Create your account
                 </p>
               </div>
@@ -79,14 +79,14 @@ function Signup() {
                 <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
                   Full Name *
                 </label>
-                <input 
-                  type="text" 
-                  name="fullName" 
+                <input
+                  type="text"
+                  name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  required 
-                  placeholder="Name" 
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]" 
+                  required
+                  placeholder="Name"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
                   disabled={loading}
                 />
               </div>
@@ -95,14 +95,14 @@ function Signup() {
                 <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
                   Email *
                 </label>
-                <input 
-                  type="email" 
-                  name="email" 
+                <input
+                  type="email"
+                  name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  required 
-                  placeholder="email@company.com" 
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]" 
+                  required
+                  placeholder="email@company.com"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
                   disabled={loading}
                 />
               </div>
@@ -111,15 +111,15 @@ function Signup() {
                 <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
                   Phone *
                 </label>
-                <input 
-                  type="tel" 
-                  name="phoneNumber" 
+                <input
+                  type="tel"
+                  name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
                   defaultValue="+91"
-                  required 
-                  placeholder="Phone" 
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]" 
+                  required
+                  placeholder="Phone"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
                   disabled={loading}
                 />
               </div>
@@ -129,11 +129,11 @@ function Signup() {
                   Designation *
                 </label>
                 <div className="relative">
-                  <select 
-                    name="designation" 
+                  <select
+                    name="designation"
                     value={formData.designation}
                     onChange={handleChange}
-                    required 
+                    required
                     className="w-full px-3 py-2 pr-8 text-sm border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
                     disabled={loading}
                   >
@@ -151,20 +151,20 @@ function Signup() {
                 <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
                   Address *
                 </label>
-                <textarea 
-                  name="address" 
+                <textarea
+                  name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  rows="3" 
-                  required 
-                  placeholder="Address" 
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2] resize-none h-16" 
+                  rows="3"
+                  required
+                  placeholder="Address"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2] resize-none h-16"
                   disabled={loading}
                 />
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={loading}
                 className="w-full mt-3 bg-[#2354A2] hover:bg-[#1e4486] disabled:bg-gray-400 text-white py-2.5 font-medium rounded-lg text-sm transition-colors shadow-md"
               >

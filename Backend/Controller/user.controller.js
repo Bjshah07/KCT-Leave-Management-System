@@ -1,6 +1,7 @@
 import User from "../Models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../middleware/auth.js";
+import sendCredentialsEmail from "../utils/sendEmail.js";
 
 const handleUserSignup = async (req, res) => {
     try {
@@ -38,13 +39,18 @@ const handleUserSignup = async (req, res) => {
             designation,
             address
         });
-        console.log(user, logInID, logInPassword)
+
+        // Send email with credentials
+        try {
+            await sendCredentialsEmail(email, logInID, logInPassword, fullName);
+            console.log('Welcome email sent to', email);
+        } catch (emailError) {
+            console.error('Email sending failed:', emailError);
+            // Don't fail signup if email fails
+        }
+
         res.status(201).json({
-            message: "User registered successfully! Use these credentials to login:",
-            credentials: {
-                logInID,
-                logInPassword
-            },
+            message: "User registered successfully! Check your email for login credentials.",
             data: {
                 _id: user._id,
                 fullName: user.fullName,
@@ -65,7 +71,6 @@ const handleUserSignup = async (req, res) => {
     }
 };
 
-
 const handleUserLogin = async (req, res) => {
     try {
         const { logInID, logInPassword } = req.body;
@@ -85,7 +90,6 @@ const handleUserLogin = async (req, res) => {
         }
 
         const token = generateToken(user._id);
-        // Set token in httpOnly cookie
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
