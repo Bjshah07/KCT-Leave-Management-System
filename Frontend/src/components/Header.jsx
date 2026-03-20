@@ -70,7 +70,7 @@ export default function Header({ setSidebarOpen }) {
 
         {/* Search Bar */}
         <div className="hidden sm:flex items-center gap-2 bg-slate-100 rounded-full px-4 py-2 w-60">
-          <Search className="text-slate-400 w-4 h-4 flex-shrink-0" />
+          <Search className="text-slate-400 w-4 h-4 shrink-0" />
           <input
             type="text"
             placeholder="Search"

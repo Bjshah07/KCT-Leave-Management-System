@@ -114,7 +114,7 @@ export default function Settings() {
 
         {/* Avatar + Name */}
         <div className="flex items-center gap-4 mb-6">
-          <div className="relative flex-shrink-0">
+          <div className="relative shrink-0">
             <img
               src={profile.avatar}
               alt="avatar"

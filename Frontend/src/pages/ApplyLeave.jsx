@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { ChevronDown, Calendar, Upload, Send } from "lucide-react"
+import { ChevronDown, Upload, Send } from "lucide-react"
+import { toast, ToastContainer } from "react-toastify"
 
 const leaveTypes = [
   "Annual Leave",
@@ -40,7 +41,7 @@ export default function ApplyLeave() {
 
   const handleSubmit = () => {
     if (!form.leaveType || !form.startDate || !form.endDate || !form.reason) {
-      alert("Please fill all required fields!")
+      toast.error("Please fill all required fields!")
       return
     }
     setSubmitted(true)
@@ -82,7 +83,7 @@ export default function ApplyLeave() {
       <div className="bg-white rounded-2xl p-6 shadow-sm transition-colors duration-300">
 
         <h2 className="text-lg font-bold text-slate-800 mb-1 transition-colors duration-300">
-          leave request form
+          Leave request form
         </h2>
         <p className="text-sm text-slate-400 mb-6 transition-colors duration-300">
           Fill in the details below
@@ -91,7 +92,7 @@ export default function ApplyLeave() {
         {/* Leave Type Dropdown */}
         <div className="mb-5 relative">
           <label className="text-xs font-semibold text-blue-500 mb-1.5 block">
-            leave type <span className="text-red-400">*</span>
+            Leave type <span className="text-red-400">*</span>
           </label>
           <button
             onClick={() => setShowDropdown(!showDropdown)}
@@ -137,9 +138,8 @@ export default function ApplyLeave() {
                 name="startDate"
                 value={form.startDate}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 outline-none focus:border-blue-500 transition-colors duration-200"
+                className="w-full pr-12 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 outline-none focus:border-blue-500 transition-colors duration-200 appearance-none"
               />
-              <Calendar className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
             </div>
           </div>
 
@@ -154,9 +154,8 @@ export default function ApplyLeave() {
                 name="endDate"
                 value={form.endDate}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 outline-none focus:border-blue-500 transition-colors duration-200"
+                className="w-full pr-12 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 outline-none focus:border-blue-500 transition-colors duration-200 appearance-none"
               />
-              <Calendar className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
             </div>
           </div>
 
@@ -228,6 +227,7 @@ export default function ApplyLeave() {
         </button>
 
       </div>
+      <ToastContainer />
     </>
   )
 }

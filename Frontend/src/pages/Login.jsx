@@ -33,7 +33,8 @@ function Login() {
       const response = await axios.post("http://localhost:5000/login", {
         logInID: employeeId,
         logInPassword: password
-      }, { withCredentials: true });
+      });
+      localStorage.setItem('token', response.data.token);
 
       toast.success("Login successful! Redirecting...", { autoClose: 2000 });
       const userData = response.data.data;
