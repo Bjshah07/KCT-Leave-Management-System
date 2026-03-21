@@ -74,6 +74,7 @@ function Signup() {
                   className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2] text-sm sm:text-base"
                 />
               </div>
+
               {/* Phone */}
               <div>
                 <label className="block text-[#2354A2] mb-2 font-medium text-sm sm:text-base">
@@ -91,6 +92,7 @@ function Signup() {
                   className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2] text-sm sm:text-base"
                 />
               </div>
+
               {/* Designation */}
               <div>
                 <label className="block text-[#2354A2] mb-2 font-medium text-sm sm:text-base">
@@ -104,10 +106,10 @@ function Signup() {
                     className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl appearance-none focus:ring-2 focus:ring-[#2354A2] focus:outline-none text-sm sm:text-base"
                   >
                     <option>Select designation</option>
-                    <option>Developer</option>
-                    <option>Manager</option>
-                    <option>HR</option>
-                    <option>Intern</option>
+                    <option>Senior Engineer</option>
+                    <option>Production</option>
+                    <option>Quality Engineer</option>
+                    <option>Maintenance</option>
                   </select>
                   <FaChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-[#2354A2] text-sm sm:text-base pointer-events-none" />
                 </div>

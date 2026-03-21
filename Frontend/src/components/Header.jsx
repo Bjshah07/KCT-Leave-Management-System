@@ -6,7 +6,7 @@ export default function Header({ isDark, setIsDark }) {
 
       {/* Search Bar */}
       <div className="flex items-center gap-3 bg-slate-100 dark:bg-slate-700 rounded-full px-5 py-2.5 w-72 transition-colors duration-300">
-        <Search className="text-slate-400 dark:text-slate-500 w-4 h-4 flex-shrink-0" />
+        <Search className="text-slate-400 dark:text-slate-500 w-4 h-4 shrink-0" />
         <input
           type="text"
           placeholder="Search"
