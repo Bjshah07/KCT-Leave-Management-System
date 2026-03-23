@@ -137,11 +137,11 @@ function Signup() {
                     className="w-full px-3 py-2 pr-8 text-sm border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
                     disabled={loading}
                   >
-                    <option value="">Select</option>
-                    <option>Developer</option>
-                    <option>Manager</option>
-                    <option>HR</option>
-                    <option>Intern</option>
+                    <option>Select designation</option>
+                    <option>Senior Engineer</option>
+                    <option>Production</option>
+                    <option>Quality Engineer</option>
+                    <option>Maintenance</option>
                   </select>
                   <FaChevronDown className="absolute right-2 top-2.5 text-gray-400 text-xs pointer-events-none" />
                 </div>
