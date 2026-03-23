@@ -1,109 +1,141 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import slider from "../assets/Main-slider.jpg";
 import logo from "../assets/KC_logo-icon.png";
 import { FaChevronDown } from "react-icons/fa";
 
 function Signup() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phoneNumber: '',
+    designation: '',
+    address: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    toast.dismiss();
+
+    try {
+      const response = await axios.post("http://localhost:5000/signup", formData, {
+        withCredentials: true
+      });
+
+      toast.success("Account created successfully! Check your email for login credentials.", { autoClose: 2000 });
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Signup failed", { autoClose: 2000 });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="fixed min-h-screen min-w-screen overflow-hidden">
-      {/* Background Image */}
-      <img
-        src={slider}
-        alt="background"
-        className="absolute inset-0 w-full h-full object-cover object-center"
-      />
+    <div className="min-h-screen w-screen relative">
+      {/* Background */}
+      <img src={slider} alt="background" className="fixed inset-0 w-full h-full object-cover z-0" />
 
-      {/* Signup Container */}
-      <div className="sticky flex flex-col md:flex-row items-center justify-center min-h-screen px-2 sm:px-4">
-        <div className="bg-gray-100/70 text-black border-2 border-[#2354A2] rounded-3xl shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl overflow-hidden">
+      {/* Form Container */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-2">
+        <div className="bg-white/95 backdrop-blur-md border-2 border-[#2354A2] rounded-2xl shadow-xl w-85 md:w-95 overflow-hidden">
+
           {/* Header */}
-          <div className="flex items-center gap-4 bg-gray-200 p-3 sm:p-4 md:p-5 lg:p-6 border-b-2 border-[#2354A2]">
-            <div className="bg-[#2354A2] flex items-center justify-center p-2">
-              <img
-                src={logo}
-                alt="logo"
-                className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
-              />
-            </div>
-
-            <div>
-              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[#2354A2]">
-                Create your account
-              </h1>
-              <p className="text-xs sm:text-sm md:text-base font-medium text-[#2354A2]">
-                Sign up to access your leave management portal
-              </p>
+          <div className="p-4 border-b border-[#2354A2]/30">
+            <div className="flex items-center gap-2">
+              <div className="bg-[#2354A2]  rounded-lg">
+                <img src={logo} alt="logo" className="w-8 h-8" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-lg font-bold text-[#2354A2]">
+                  Sign Up
+                </h1>
+                <p className="text-xs text-gray-600 ">
+                  Create your account
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Form */}
-          <div className="p-4 sm:p-5 md:p-6 lg:p-8">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                console.log("Signup submitted");
-              }}
-              className="space-y-3 sm:space-y-4 md:space-y-5"
-            >
-              {/* Full Name */}
+          <div className="p-5 space-y-3">
+            <form onSubmit={handleSubmit}>
               <div>
-                <label className="block text-[#2354A2] mb-2 font-medium text-sm sm:text-base">
-                  Full Name
+                <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
+                  Full Name *
                 </label>
-
                 <input
                   type="text"
                   name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
                   required
-                  placeholder="Enter your name"
-                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2] text-sm sm:text-base"
+                  placeholder="Name"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
+                  disabled={loading}
                 />
               </div>
 
-              {/* Email */}
               <div>
-                <label className="block text-[#2354A2] mb-2 font-medium text-sm sm:text-base">
-                  Email
+                <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
+                  Email *
                 </label>
-
                 <input
                   type="email"
                   name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   required
-                  placeholder="Enter your email"
-                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2] text-sm sm:text-base"
+                  placeholder="email@company.com"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
+                  disabled={loading}
                 />
               </div>
 
-              {/* Phone */}
               <div>
-                <label className="block text-[#2354A2] mb-2 font-medium text-sm sm:text-base">
-                  Phone
+                <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
+                  Phone *
                 </label>
-
                 <input
                   type="tel"
-                  name="phone"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
                   defaultValue="+91"
-                  maxLength="13"
-                  pattern="[0-9]{13}"
                   required
-                  placeholder="Enter phone number"
-                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2] text-sm sm:text-base"
+                  placeholder="Phone"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
+                  disabled={loading}
                 />
               </div>
 
-              {/* Designation */}
               <div>
-                <label className="block text-[#2354A2] mb-2 font-medium text-sm sm:text-base">
-                  Designation
+                <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
+                  Designation *
                 </label>
-
                 <div className="relative">
                   <select
                     name="designation"
+                    value={formData.designation}
+                    onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl appearance-none focus:ring-2 focus:ring-[#2354A2] focus:outline-none text-sm sm:text-base"
+                    className="w-full px-3 py-2 pr-8 text-sm border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-[#2354A2]"
+                    disabled={loading}
                   >
                     <option>Select designation</option>
                     <option>Senior Engineer</option>
@@ -111,36 +143,39 @@ function Signup() {
                     <option>Quality Engineer</option>
                     <option>Maintenance</option>
                   </select>
-                  <FaChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-[#2354A2] text-sm sm:text-base pointer-events-none" />
+                  <FaChevronDown className="absolute right-2 top-2.5 text-gray-400 text-xs pointer-events-none" />
                 </div>
               </div>
 
-              {/* Address */}
               <div>
-                <label className="block text-[#2354A2] mb-2 font-medium text-sm sm:text-base">
-                  Address
+                <label className="block text-[#2354A2] text-xs font-medium mb-1.5">
+                  Address *
                 </label>
-
-                <input
-                  type="text"
+                <textarea
                   name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  rows="3"
                   required
-                  placeholder="Enter address"
-                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2] text-sm sm:text-base"
+                  placeholder="Address"
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2354A2] resize-none h-16"
+                  disabled={loading}
                 />
               </div>
 
-              {/* Button */}
               <button
                 type="submit"
-                className="w-full bg-[#2354A2] text-white py-2 sm:py-3 rounded-xl font-semibold hover:bg-[#1e4486] transition text-sm sm:text-base"
+                disabled={loading}
+                className="w-full mt-3 bg-[#2354A2] hover:bg-[#1e4486] disabled:bg-gray-400 text-white py-2.5 font-medium rounded-lg text-sm transition-colors shadow-md"
               >
-                Create Account
+                {loading ? "Creating..." : "Sign Up"}
               </button>
             </form>
           </div>
         </div>
       </div>
+
+      <ToastContainer position="top-right" theme="colored" />
     </div>
   );
 }

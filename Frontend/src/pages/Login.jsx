@@ -1,15 +1,51 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import slider from "../assets/Main-slider.jpg";
 import logo from "../assets/KC_logo-icon.png";
 import { FaEyeSlash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  
+  const [employeeId, setEmployeeId] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+
   const togglePassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!employeeId || !password) {
+      toast.error("Please fill all fields", { autoClose: 2000 });
+      return;
+    }
+    setLoading(true);
+    toast.dismiss();
+
+    try {
+      const response = await axios.post("http://localhost:5000/login", {
+        logInID: employeeId,
+        logInPassword: password
+      });
+      localStorage.setItem('token', response.data.token);
+
+      toast.success("Login successful! Redirecting...", { autoClose: 2000 });
+      const userData = response.data.data;
+
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error(err.response?.data?.message || "Login failed. Please try again.", { autoClose: 2000 });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,10 +83,7 @@ function Login() {
           {/* Form */}
           <div className="p-6 md:p-8 space-y-6">
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                console.log("Login submitted");
-              }}
+              onSubmit={handleSubmit}
               className="space-y-5"
             >
               {/* Employee ID */}
@@ -64,6 +97,8 @@ function Login() {
                   name="employeeId"
                   required
                   placeholder="Enter Employee Id"
+                  value={employeeId}
+                  onChange={(e) => setEmployeeId(e.target.value)}
                   className="w-full px-4 py-3 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2]"
                 />
               </div>
@@ -79,10 +114,12 @@ function Login() {
                     name="password"
                     required
                     placeholder="Enter Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-3 pr-12 border border-[#2354A2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2354A2]"
                   />
-                  <div 
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer hover:text-gray-700 p-1" 
+                  <div
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer hover:text-gray-700 p-1"
                     onClick={togglePassword}
                   >
                     {showPassword ? <FaEye /> : <FaEyeSlash />}
@@ -93,9 +130,14 @@ function Login() {
               {/* Login Button */}
               <button
                 type="submit"
-                className="w-full bg-[#2354A2] text-white py-3 rounded-xl font-semibold hover:bg-[#1e4486] transition"
+                disabled={loading}
+                className={`w-full py-3 rounded-xl font-semibold transition-all 
+                  ${loading
+                    ? "bg-gray-400 text-white cursor-not-allowed opacity-75"
+                    : "bg-[#2354A2] text-white hover:bg-[#1e4486]"
+                  }`}
               >
-                LOGIN
+                {loading ? "Logging in..." : "LOGIN"}
               </button>
             </form>
 
@@ -109,6 +151,7 @@ function Login() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
