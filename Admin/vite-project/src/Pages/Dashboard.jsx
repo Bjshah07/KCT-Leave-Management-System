@@ -69,7 +69,7 @@ export default function Layout() {
             {/* Pie Chart */}
             <PieChartDept />
           </div>
-           <RecentActivity/>
+          <RecentActivity />
         </div>
       </div>
     </div>

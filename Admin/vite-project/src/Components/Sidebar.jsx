@@ -6,7 +6,6 @@ import { SiGoogledocs } from "react-icons/si";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 
-
 export default function Sidebar() {
   return (
     <div className="w-full h-full  bg-white shadow-md flex flex-col justify-between p-5">
@@ -31,7 +30,7 @@ export default function Sidebar() {
           </button>
 
           <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl">
-            <SiGoogledocs  className="text-xl"/> Leave Requests
+            <SiGoogledocs className="text-xl" /> Leave Requests
           </button>
 
           <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl">
