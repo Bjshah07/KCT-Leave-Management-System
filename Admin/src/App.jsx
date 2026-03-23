@@ -29,6 +29,7 @@ function App() {
               <Route path="/balance" element={<LeaveBalance />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
         </div>
