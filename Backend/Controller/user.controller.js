@@ -1,6 +1,7 @@
 import User from "../Models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../middleware/auth.js";
+import sendCredentialsEmail from "../utils/sendEmail.js";
 
 const handleUserSignup = async (req, res) => {
     try {
@@ -39,12 +40,17 @@ const handleUserSignup = async (req, res) => {
             address
         });
 
+        // Send email with credentials
+        try {
+            await sendCredentialsEmail(email, logInID, logInPassword, fullName);
+            console.log('Welcome email sent to', email);
+        } catch (emailError) {
+            console.error('Email sending failed:', emailError);
+            // Don't fail signup if email fails
+        }
+
         res.status(201).json({
-            message: "User registered successfully! Use these credentials to login:",
-            credentials: {
-                logInID,
-                logInPassword
-            },
+            message: "User registered successfully! Check your email for login credentials.",
             data: {
                 _id: user._id,
                 fullName: user.fullName,
@@ -65,7 +71,6 @@ const handleUserSignup = async (req, res) => {
     }
 };
 
-
 const handleUserLogin = async (req, res) => {
     try {
         const { logInID, logInPassword } = req.body;
@@ -85,18 +90,12 @@ const handleUserLogin = async (req, res) => {
         }
 
         const token = generateToken(user._id);
-        // Set token in httpOnly cookie
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
 
         const userData = await User.findById(user._id).select('-logInPassword');
-        
+
         res.status(200).json({
             message: "Login successful",
+            token,
             data: userData
         });
 
