@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/KC_logo-icon.png";
 import { LuLogOut, LuLayoutDashboard } from "react-icons/lu";
