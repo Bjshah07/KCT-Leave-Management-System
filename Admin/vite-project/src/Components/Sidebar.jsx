@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import logo from "../assets/KC_logo-icon.png";
 import { LuLogOut, LuLayoutDashboard } from "react-icons/lu";
 import { GoPeople } from "react-icons/go";
@@ -21,25 +22,70 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="space-y-3">
-          <button className="w-full flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-medium">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm"
+              }`
+            }
+          >
             <LuLayoutDashboard className="text-xl" /> Dashboard
-          </button>
+          </NavLink>
 
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl">
+          <NavLink
+            to="/employees"
+            className={({ isActive }) =>
+              `w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm"
+              }`
+            }
+          >
             <GoPeople className="text-xl" /> Employees
-          </button>
+          </NavLink>
 
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl">
+          <NavLink
+            to="/leaves"
+            className={({ isActive }) =>
+              `w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm"
+              }`
+            }
+          >
             <SiGoogledocs className="text-xl" /> Leave Requests
-          </button>
+          </NavLink>
 
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl">
+          <NavLink
+            to="/balance"
+            className={({ isActive }) =>
+              `w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm"
+              }`
+            }
+          >
             <MdOutlineAccountBalanceWallet className="text-xl" /> Leave Balance
-          </button>
+          </NavLink>
 
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl">
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              `w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm"
+              }`
+            }
+          >
             <IoSettingsOutline className="text-xl" /> Settings
-          </button>
+          </NavLink>
         </nav>
       </div>
 
