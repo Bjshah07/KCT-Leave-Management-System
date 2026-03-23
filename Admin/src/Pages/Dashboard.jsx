@@ -9,68 +9,58 @@ import { FaUsers, FaFileAlt, FaClock, FaCheck } from "react-icons/fa";
 export default function Layout() {
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 shrink-0">
-        <Sidebar />
-      </div>
 
-      {/* Right Side */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <Header />
+      {/* Main Content */}
+      <div className="flex-1 p-6 overflow-y-auto">
+        {/* Heading */}
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          Dashboard Overview
+        </h1>
+        <p className="text-gray-500 mb-8">
+          Welcome back, Emily! Here's what's happening today.
+        </p>
 
-        {/* Main Content */}
-        <div className="flex-1 p-6 overflow-y-auto">
-          {/* Heading */}
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Dashboard Overview
-          </h1>
-          <p className="text-gray-500 mb-8">
-            Welcome back, Emily! Here's what's happening today.
-          </p>
-
-          {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card
-              title="Total Employees"
-              value="10"
-              note="+2 this month"
-              color="blue"
-              icon={<FaUsers />}
-            />
-            <Card
-              title="Total Leaves"
-              value="8"
-              note="This month"
-              color="purple"
-              icon={<FaFileAlt />}
-            />
-            <Card
-              title="Pending Requests"
-              value="3"
-              note="Needs action"
-              color="orange"
-              icon={<FaClock />}
-            />
-            <Card
-              title="Approved Leaves"
-              value="4"
-              note="This month"
-              color="green"
-              icon={<FaCheck />}
-            />
-          </div>
-
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Line Chart */}
-            <Chart />
-
-            {/* Pie Chart */}
-            <PieChartDept />
-          </div>
-          <RecentActivity />
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card
+            title="Total Employees"
+            value="10"
+            note="+2 this month"
+            color="blue"
+            icon={<FaUsers />}
+          />
+          <Card
+            title="Total Leaves"
+            value="8"
+            note="This month"
+            color="purple"
+            icon={<FaFileAlt />}
+          />
+          <Card
+            title="Pending Requests"
+            value="3"
+            note="Needs action"
+            color="orange"
+            icon={<FaClock />}
+          />
+          <Card
+            title="Approved Leaves"
+            value="4"
+            note="This month"
+            color="green"
+            icon={<FaCheck />}
+          />
         </div>
+
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Line Chart */}
+          <Chart />
+
+          {/* Pie Chart */}
+          <PieChartDept />
+        </div>
+        <RecentActivity />
       </div>
     </div>
   );
