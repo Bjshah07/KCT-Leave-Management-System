@@ -93,6 +93,14 @@ const handleUserLogin = async (req, res) => {
 
         const userData = await User.findById(user._id).select('-logInPassword');
 
+        // Set httpOnly cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        });
+
         res.status(200).json({
             message: "Login successful",
             token,

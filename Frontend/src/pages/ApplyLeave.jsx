@@ -39,12 +39,47 @@ export default function ApplyLeave() {
     if (file) setForm({ ...form, document: file })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.leaveType || !form.startDate || !form.endDate || !form.reason) {
       toast.error("Please fill all required fields!")
       return
     }
-    setSubmitted(true)
+
+    try {
+      const formData = new FormData();
+      formData.append("leaveType", form.leaveType);
+      formData.append("startDate", form.startDate);
+      formData.append("endDate", form.endDate);
+      formData.append("reason", form.reason);
+      if (form.document) {
+        formData.append("document", form.document);
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await fetch("http://localhost:5000/api/leave/apply", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Submission failed");
+      }
+
+      toast.success("Leave request submitted successfully!");
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast.error(error.message || "Failed to submit request");
+    }
   }
 
   if (submitted) {

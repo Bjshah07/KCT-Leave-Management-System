@@ -9,13 +9,19 @@ const generateToken = (payload) => {
 
 const verifyToken = async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        let token;
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7);
+        } else if (req.cookies.token) {
+            token = req.cookies.token;
+        }
         if (!token) {
             return res.status(401).json({ message: "No token, authorization denied" });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded._id).select('-logInPassword');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET );
+        const user = await User.findById(decoded.payload).select('-logInPassword');
         if (!user) {
             return res.status(401).json({ message: "Invalid token" });
         }
