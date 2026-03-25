@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { verifyToken } from "../middleware/auth.js";
-import { createLeave } from "../Controller/leave.controller.js";
+import { createLeave, getMyLeaves } from "../Controller/leave.controller.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -38,6 +38,7 @@ const upload = multer({
 
 const leaveRouter = Router();
 
+leaveRouter.get("/my-leaves", verifyToken, getMyLeaves);
 leaveRouter.post("/apply", verifyToken, upload.single("document"), createLeave);
 
 export default leaveRouter;

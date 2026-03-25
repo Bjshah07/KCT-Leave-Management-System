@@ -113,4 +113,72 @@ const handleUserLogin = async (req, res) => {
     }
 }
 
-export { handleUserSignup, handleUserLogin };
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const updates = req.body;
+
+    // Validate allowed fields
+    const allowedFields = ['fullName', 'email', 'phoneNumber', 'designation', 'address'];
+    const validUpdates = {};
+    for (const [key, value] of Object.entries(updates)) {
+      if (allowedFields.includes(key)) {
+        validUpdates[key] = value;
+      }
+    }
+
+    if (Object.keys(validUpdates).length === 0) {
+      return res.status(400).json({ message: 'No valid fields to update' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      validUpdates,
+      { returnDocument: 'after', runValidators: true }
+    ).select('-logInPassword');
+
+    res.json({
+      message: 'Profile updated successfully',
+      data: updatedUser
+    });
+  } catch (error) {
+    console.error(error);
+    if (error.code === 11000) {
+      return res.status(400).json({ message: 'Email or phone already exists' });
+    }
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user._id;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current and new password required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters' });
+    }
+
+    const user = await User.findById(userId).select('+logInPassword');
+    const isMatch = await bcrypt.compare(currentPassword, user.logInPassword);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password incorrect' });
+    }
+
+    // Update password (pre-save hook will hash)
+    user.logInPassword = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export { handleUserSignup, handleUserLogin, updateProfile, changePassword };

@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext"
 
 export default function Header({ setSidebarOpen }) {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   return (
     <header className="flex items-center justify-between px-4 lg:px-7 py-4 bg-white border-b border-slate-200">
@@ -19,7 +20,7 @@ export default function Header({ setSidebarOpen }) {
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Search Bar
+        {/* Search Bar 
         <div className="hidden sm:flex items-center gap-2 bg-slate-100 rounded-full px-4 py-2 w-60">
           <Search className="text-slate-400 w-4 h-4 shrink-0" />
           <input
@@ -43,20 +44,20 @@ export default function Header({ setSidebarOpen }) {
         <div className="hidden sm:block w-px h-8 bg-slate-200" />
 
         {/* User Info */}
-        {useAuth().user ? (
+        {user ? (
           <div
             onClick={() => navigate("/settings")}
             className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 px-2 py-1 rounded-xl transition-colors duration-200"
           >
             <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover ring-2 ring-slate-200 bg-linear-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-              {useAuth().user.fullName ? useAuth().user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'JD'}
+              {user.fullName ? user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'JD'}
             </div>
             <div className="hidden md:block">
               <p className="text-sm font-semibold text-slate-800 leading-tight">
-                {useAuth().user.fullName || 'User'}
+                {user.fullName || 'User'}
               </p>
               <p className="text-xs text-slate-400">
-                {useAuth().user.email || 'user@example.com'}
+                {user.email || 'user@example.com'}
               </p>
             </div>
             <span className="hidden md:block text-slate-400 text-xl ml-1">›</span>

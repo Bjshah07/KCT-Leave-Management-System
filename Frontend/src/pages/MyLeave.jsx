@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { leaves } from "../data/leaveData"
+import { useState, useEffect } from "react"
+import { useAuth } from "../context/AuthContext"
 
 const filters = ["All", "Pending", "Approved", "Rejected"]
 
@@ -18,6 +18,42 @@ const filterStyles = {
 
 export default function MyLeave() {
   const [activeFilter, setActiveFilter] = useState("All")
+  const [leaves, setLeaves] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const { user, loading: authLoading } = useAuth()
+
+  useEffect(() => {
+    const fetchLeaves = async () => {
+      if (authLoading || !user) return
+
+      try {
+        setLoading(true)
+        setError(null)
+        const token = localStorage.getItem('token')
+        const response = await fetch('http://localhost:5000/api/leave/my-leaves', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch leaves')
+        }
+
+        const data = await response.json()
+        setLeaves(data.leaves || [])
+      } catch (err) {
+        setError(err.message)
+        setLeaves([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLeaves()
+  }, [user, authLoading])
 
   const filtered = activeFilter === "All"
     ? leaves
@@ -52,7 +88,17 @@ export default function MyLeave() {
 
       {/* ── MOBILE CARD VIEW (shown below md) ── */}
       <div className="flex flex-col gap-3 md:hidden">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-16 text-slate-400 bg-white rounded-2xl">
+            <p className="text-4xl mb-3">⏳</p>
+            <p className="text-sm font-medium">Loading your leaves...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16 text-red-400 bg-white rounded-2xl">
+            <p className="text-4xl mb-3">❌</p>
+            <p className="text-sm font-medium text-red-600">{error}</p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16 text-slate-400 bg-white rounded-2xl">
             <p className="text-4xl mb-3">📭</p>
             <p className="text-sm font-medium">No {activeFilter} leaves found</p>
@@ -110,61 +156,73 @@ export default function MyLeave() {
 
       {/* ── DESKTOP TABLE VIEW (shown on md+) ── */}
       <div className="hidden md:block bg-white rounded-2xl shadow-sm overflow-hidden transition-colors duration-300">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-slate-100">
-              {["TYPE", "DATES", "DAYS", "APPROVAL STEPS", "STATUS"].map((h) => (
-                <th
-                  key={h}
-                  className="text-left text-xs font-semibold text-slate-400 tracking-wider px-6 py-4"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((row, i) => (
-              <tr
-                key={i}
-                className="border-b border-slate-50 hover:bg-slate-50 transition-colors duration-200"
-              >
-                <td className="px-6 py-4 text-sm font-semibold text-slate-700">
-                  {row.type}
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-500 whitespace-nowrap">
-                  {row.dates}
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-500">
-                  {row.days}
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {row.steps.map((step, j) => (
-                      <span
-                        key={j}
-                        className={`text-xs font-semibold px-3 py-1 rounded-full
-                          ${step.approved
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-amber-100 text-amber-700"
-                          }`}
-                      >
-                        {step.label}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${statusStyles[row.status]}`}>
-                    {row.status}
-                  </span>
-                </td>
+        {loading ? (
+          <div className="text-center py-16 text-slate-400">
+            <p className="text-4xl mb-3">⏳</p>
+            <p className="text-sm font-medium">Loading your leaves...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16 text-red-400">
+            <p className="text-4xl mb-3">❌</p>
+            <p className="text-sm font-medium text-red-600">{error}</p>
+          </div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate-100">
+                {["TYPE", "DATES", "DAYS", "APPROVAL STEPS", "STATUS"].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left text-xs font-semibold text-slate-400 tracking-wider px-6 py-4"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.map((row, i) => (
+                <tr
+                  key={i}
+                  className="border-b border-slate-50 hover:bg-slate-50 transition-colors duration-200"
+                >
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-700">
+                    {row.type}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-500 whitespace-nowrap">
+                    {row.dates}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-500">
+                    {row.days}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {row.steps.map((step, j) => (
+                        <span
+                          key={j}
+                          className={`text-xs font-semibold px-3 py-1 rounded-full
+                            ${step.approved
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-amber-100 text-amber-700"
+                            }`}
+                        >
+                          {step.label}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${statusStyles[row.status]}`}>
+                      {row.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
-        {filtered.length === 0 && (
+        {!loading && !error && filtered.length === 0 && (
           <div className="text-center py-16 text-slate-400">
             <p className="text-4xl mb-3">📭</p>
             <p className="text-sm font-medium">No {activeFilter} leaves found</p>

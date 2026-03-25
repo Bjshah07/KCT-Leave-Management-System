@@ -1,43 +1,97 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useAuth } from "../context/AuthContext"
 import { Camera, Pencil, Check, X } from "lucide-react"
 
 export default function Settings() {
-  const [profile, setProfile] = useState({
-    name: "Rajesh Kumar",
-    email: "RajeshKumar1234@gmail.com",
-    phone: "+91 - 1234567890",
-    designation: "Production",
-    empId: "EMP 00123456",
-    avatar: "https://i.pravatar.cc/100?img=12",
-  })
-
-  // Temp state while editing
-  const [editValues, setEditValues] = useState({ ...profile })
+  const { user, loading: authLoading } = useAuth()
+  const [profile, setProfile] = useState(null)
+  const [editValues, setEditValues] = useState({})
   const [isEditing, setIsEditing] = useState(false)
-
   const [passwords, setPasswords] = useState({
-    current: "",
-    newPass: "",
-    confirm: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
   })
-
   const [profileSaved, setProfileSaved] = useState(false)
   const [passwordSaved, setPasswordSaved] = useState(false)
   const [passwordError, setPasswordError] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    if (user && !authLoading) {
+      setProfile({
+        name: user.fullName,
+        email: user.email,
+        phone: user.phoneNumber,
+        designation: user.designation,
+        empId: user.logInID || 'N/A',
+        avatar: 'https://i.pravatar.cc/100?img=12' // Static for now
+      })
+      setEditValues({
+        fullName: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        designation: user.designation
+      })
+      setLoading(false)
+    }
+  }, [user, authLoading])
 
   const handleEditChange = (e) => {
     setEditValues({ ...editValues, [e.target.name]: e.target.value })
   }
 
-  const handleSaveProfile = () => {
-    setProfile({ ...editValues })
-    setIsEditing(false)
-    setProfileSaved(true)
-    setTimeout(() => setProfileSaved(false), 3000)
+  const handleSaveProfile = async () => {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem('token')
+      const response = await fetch('http://localhost:5000/api/user/profile', {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editValues)
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile')
+      }
+
+      // Refresh user data
+      const meResponse = await fetch('http://localhost:5000/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      const updatedUser = await meResponse.json()
+      
+      setProfile({
+        name: updatedUser.fullName,
+        email: updatedUser.email,
+        phone: updatedUser.phoneNumber,
+        designation: updatedUser.designation,
+        empId: updatedUser.logInID || 'N/A',
+        avatar: profile.avatar
+      })
+      setIsEditing(false)
+      setProfileSaved(true)
+      setTimeout(() => setProfileSaved(false), 3000)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleCancelEdit = () => {
-    setEditValues({ ...profile })
+    if (user) {
+      setEditValues({
+        fullName: user.fullName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        designation: user.designation
+      })
+    }
     setIsEditing(false)
   }
 
@@ -47,32 +101,70 @@ export default function Settings() {
     setPasswordError("")
   }
 
-  const handleUpdatePassword = () => {
-    if (!passwords.current || !passwords.newPass || !passwords.confirm) {
+  const handleUpdatePassword = async () => {
+    if (!passwords.currentPassword || !passwords.newPassword || !passwords.confirmPassword) {
       setPasswordError("Please fill all password fields!")
       return
     }
-    if (passwords.newPass !== passwords.confirm) {
+    if (passwords.newPassword !== passwords.confirmPassword) {
       setPasswordError("New password and confirm password do not match!")
       return
     }
-    if (passwords.newPass.length < 6) {
+    if (passwords.newPassword.length < 6) {
       setPasswordError("Password must be at least 6 characters!")
       return
     }
-    setPasswordError("")
-    setPasswordSaved(true)
-    setPasswords({ current: "", newPass: "", confirm: "" })
-    setTimeout(() => setPasswordSaved(false), 3000)
+
+    try {
+      const token = localStorage.getItem('token')
+      const response = await fetch('http://localhost:5000/api/user/change-password', {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          currentPassword: passwords.currentPassword,
+          newPassword: passwords.newPassword
+        })
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.message || 'Failed to update password')
+      }
+
+      setPasswordError("")
+      setPasswordSaved(true)
+      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" })
+      setTimeout(() => setPasswordSaved(false), 3000)
+    } catch (err) {
+      setPasswordError(err.message)
+    }
   }
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0]
     if (file) {
       const url = URL.createObjectURL(file)
-      setProfile({ ...profile, avatar: url })
-      setEditValues({ ...editValues, avatar: url })
+      setProfile(prev => ({ ...prev, avatar: url }))
+      setEditValues(prev => ({ ...prev, avatar: url }))
     }
+  }
+
+  if (authLoading || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-100">
+        <div className="text-lg">Loading...</div>
+      </div>
+    )
+  }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-100 text-red-600">
+        Error: {error}
+      </div>
+    )
   }
 
   // Reusable read-only field
@@ -177,9 +269,9 @@ export default function Settings() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {isEditing ? (
             <>
-              <EditField label="Name" name="name" value={editValues.name} />
+<EditField label="Name" name="fullName" value={editValues.fullName} />
               <EditField label="Email" name="email" value={editValues.email} type="email" />
-              <EditField label="Phone" name="phone" value={editValues.phone} />
+              <EditField label="Phone" name="phoneNumber" value={editValues.phoneNumber} />
               <EditField label="Designation" name="designation" value={editValues.designation} />
             </>
           ) : (
@@ -221,8 +313,8 @@ export default function Settings() {
             </label>
             <input
               type="password"
-              name="current"
-              value={passwords.current}
+              name="currentPassword"
+              value={passwords.currentPassword}
               onChange={handlePasswordChange}
               placeholder="••••••••••"
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 outline-none focus:border-blue-500 transition-colors duration-200"
@@ -235,8 +327,8 @@ export default function Settings() {
             </label>
             <input
               type="password"
-              name="newPass"
-              value={passwords.newPass}
+              name="newPassword"
+              value={passwords.newPassword}
               onChange={handlePasswordChange}
               placeholder="••••••••••"
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 outline-none focus:border-blue-500 transition-colors duration-200"
@@ -249,8 +341,8 @@ export default function Settings() {
             </label>
             <input
               type="password"
-              name="confirm"
-              value={passwords.confirm}
+              name="confirmPassword"
+              value={passwords.confirmPassword}
               onChange={handlePasswordChange}
               placeholder="••••••••••"
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 outline-none focus:border-blue-500 transition-colors duration-200"

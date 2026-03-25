@@ -31,7 +31,7 @@ function Signup() {
     toast.dismiss();
 
     try {
-      const response = await axios.post("http://localhost:5000/signup", formData, {
+      const response = await axios.post("http://localhost:5000/api/user/signup", formData, {
         withCredentials: true
       });
 

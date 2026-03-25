@@ -1,38 +1,39 @@
 import Leave from "../Models/leave.model.js";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-import multer from "multer";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const getMyLeaves = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const leaves = await Leave.find({ user: userId })
+      .populate('user', 'name')
+      .sort({ createdAt: -1 })
+      .lean();
 
-// Multer storage config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads/leave-docs");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
+    const transformedLeaves = leaves.map(leave => {
+      const days = Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1;
+      const status = leave.status.charAt(0).toUpperCase() + leave.status.slice(1);
+      const dates = `${new Date(leave.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} - ${new Date(leave.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`;
+
+      const steps = [
+        { label: 'HR', approved: status === 'Approved' },
+        { label: 'Manager', approved: status === 'Approved' },
+        { label: 'Director', approved: status === 'Approved' }
+      ];
+
+      return {
+        type: leave.leaveType,
+        dates,
+        days,
+        steps,
+        status
+      };
+    });
+
+    res.json({ leaves: transformedLeaves });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image/") || file.mimetype === "application/pdf") {
-      cb(null, true);
-    } else {
-      cb(new Error("Only PDF and images allowed"), false);
-    }
-  }
-});
+};
 
 const createLeave = async (req, res) => {
   try {
@@ -69,5 +70,5 @@ const createLeave = async (req, res) => {
   }
 };
 
-export { createLeave };
+export { createLeave, getMyLeaves };
 

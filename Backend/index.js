@@ -23,7 +23,7 @@ app.use(cookieParser());  // Parse cookies
 // Connect to MongoDB
 connectDB(process.env.MONGO_URI);
 
-app.use("/", userRouter)
+app.use("/api/user", userRouter)
 app.use("/api/auth", authRouter);
 app.use("/api/leave", leaveRouter);
 

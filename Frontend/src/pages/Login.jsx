@@ -30,7 +30,7 @@ function Login() {
     toast.dismiss();
 
     try {
-      const response = await axios.post("http://localhost:5000/login", {
+      const response = await axios.post("http://localhost:5000/api/user/login", {
         logInID: employeeId,
         logInPassword: password
       }, { withCredentials: true });

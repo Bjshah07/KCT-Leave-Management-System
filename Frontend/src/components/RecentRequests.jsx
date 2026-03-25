@@ -1,9 +1,40 @@
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { leaves } from "../data/leaveData"
+import { useAuth } from "../context/AuthContext"
 
 export default function RecentRequests() {
   const navigate = useNavigate()
-  const recentLeaves = leaves.slice(0, 2)
+  const { loading: authLoading } = useAuth()
+  const [recentLeaves, setRecentLeaves] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    if (authLoading) return
+
+    const fetchRecentLeaves = async () => {
+      try {
+        setLoading(true)
+        const token = localStorage.getItem('token')
+        const response = await fetch('http://localhost:5000/api/leave/my-leaves', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (!response.ok) throw new Error('Failed to fetch recent leaves')
+
+        const data = await response.json()
+        setRecentLeaves((data.leaves || []).slice(0, 2))
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRecentLeaves()
+  }, [authLoading])
 
   return (
     <div className="bg-white rounded-2xl p-4 lg:p-6 shadow-sm">
