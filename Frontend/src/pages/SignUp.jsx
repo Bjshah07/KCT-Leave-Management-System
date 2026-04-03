@@ -138,10 +138,10 @@ function Signup() {
                     disabled={loading}
                   >
                     <option>Select designation</option>
-                    <option>Senior Engineer</option>
-                    <option>Production</option>
-                    <option>Quality Engineer</option>
-                    <option>Maintenance</option>
+                    <option>Manager</option>
+                    <option>HR</option>
+                    <option>Developer</option>
+                    <option>Intern</option>
                   </select>
                   <FaChevronDown className="absolute right-2 top-2.5 text-gray-400 text-xs pointer-events-none" />
                 </div>
