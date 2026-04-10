@@ -5,7 +5,7 @@ const getLeaveBalance = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    // Leave types from model
+    // Leave types from model - only balance-tracked types
     const leaveTypes = ["Annual Leave", "Sick Leave"];
     
     const stats = await Promise.all(leaveTypes.map(async (type) => {

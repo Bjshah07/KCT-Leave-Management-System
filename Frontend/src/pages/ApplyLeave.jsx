@@ -1,15 +1,18 @@
 import { useState, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { ChevronDown, Upload, Send, Calendar, Clock, User } from "lucide-react";
+import { ChevronDown, Upload, Send } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import LeaveRequestForm from "./forms/LeaveRequestForm";
+import CompensatoryOffForm from "./forms/CompensatoryOffForm";
+import GatePassForm from "./forms/GatePassForm";
+import OnDutyForm from "./forms/OnDutyForm";
 
 const LEAVE_TYPES = [
   "Annual Leave",
   "Sick Leave",
   "Casual Leave",
-  "Maternity Leave",
-  "Paternity Leave",
   "Unpaid Leave",
 ];
 
@@ -63,7 +66,6 @@ export default function ApplyLeave() {
       if (!form.outTime) newErrors.outTime = "Out time is required";
       if (!form.startDate) newErrors.startDate = "Start date is required";
       if (!form.endDate) newErrors.endDate = "End date is required";
-      if (!form.reason.trim()) newErrors.reason = "Reason is required";
     } else if (activeTab === 2) {
       // Gate Pass
       if (!form.startDate) newErrors.startDate = "Date is required";
@@ -143,9 +145,16 @@ export default function ApplyLeave() {
   };
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: "" });
+    }
+  };
+
+  const validateLeaveType = (type) => {
+    setForm(prev => ({ ...prev, leaveType: type }));
+    if (errors.leaveType) {
+      setErrors(prev => ({ ...prev, leaveType: "" }));
     }
   };
 
@@ -162,7 +171,7 @@ export default function ApplyLeave() {
       toast.error("Only PDF and images allowed");
       return;
     }
-    setForm({ ...form, document: file });
+    setForm(prev => ({ ...prev, document: file }));
   };
 
   const handleDrop = (e) => {
@@ -247,410 +256,46 @@ export default function ApplyLeave() {
 
         <div className="space-y-6">
           {activeTab === 0 && (
-            <>
-              {/* Leave Type Dropdown */}
-              <div className="relative">
-                <label className="block text-xs font-semibold text-blue-600 mb-2">
-                  Leave Type <span className="text-red-500">*</span>
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setShowDropdown(!showDropdown)}
-                  className={`w-full p-4 pr-10 rounded-xl border-2 text-sm transition-all duration-200 flex items-center justify-between ${form.leaveType
-                      ? "border-blue-400 bg-blue-50 text-slate-800"
-                      : "border-slate-200 hover:border-slate-300"
-                    }`}
-                >
-                  <span>{form.leaveType || "Select leave type"}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 transition-transform ${showDropdown ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {showDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-20 max-h-60 overflow-auto">
-                    {LEAVE_TYPES.map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => {
-                          setForm({ ...form, leaveType: type });
-                          setShowDropdown(false);
-                        }}
-                        className={`w-full text-left p-3 text-sm hover:bg-blue-50 ${form.leaveType === type
-                            ? "bg-blue-100 font-semibold"
-                            : ""
-                          }`}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {errors.leaveType && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.leaveType}
-                  </p>
-                )}
-              </div>
-
-              {/* Dates */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    Start Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    value={form.startDate}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.startDate
-                        ? "border-red-300"
-                        : "border-slate-200 hover:border-slate-300"
-                      }`}
-                  />
-                  {errors.startDate && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.startDate}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    End Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="endDate"
-                    value={form.endDate}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.endDate
-                        ? "border-red-300"
-                        : "border-slate-200 hover:border-slate-300"
-                      }`}
-                  />
-                  {errors.endDate && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.endDate}
-                    </p>
-                  )}
-                </div>
-              </div>
-              {errors.dateOrder && (
-                <p className="text-red-500 text-xs col-span-2">
-                  {errors.dateOrder}
-                </p>
-              )}
-
-              {/* Reason */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-2">
-                  Reason <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="reason"
-                  value={form.reason}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="Provide detailed reason for your leave request..."
-                  className={`w-full p-4 rounded-xl border-2 resize-vertical text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.reason
-                      ? "border-red-300"
-                      : "border-slate-200 hover:border-slate-300"
-                    }`}
-                />
-                {errors.reason && (
-                  <p className="text-red-500 text-xs mt-1">{errors.reason}</p>
-                )}
-              </div>
-
-              {/* Document Upload */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-2">
-                  Supporting Document (Optional)
-                </label>
-                <div
-                  className={`p-8 border-2 border-dashed rounded-xl text-center transition-all duration-200 cursor-pointer flex flex-col items-center gap-3 ${dragOver
-                      ? "border-blue-400 bg-blue-25"
-                      : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                    }`}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragOver(true);
-                  }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  <Upload className="w-8 h-8 text-slate-400" />
-                  {form.document ? (
-                    <p className="text-sm font-semibold text-emerald-600">
-                      {form.document.name}
-                    </p>
-                  ) : (
-                    <>
-                      <p className="text-sm text-slate-600 font-medium">
-                        Click to upload or drag & drop
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        PDF, JPG, PNG (Max 5MB)
-                      </p>
-                    </>
-                  )}
-                </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-            </>
+            <LeaveRequestForm 
+              form={form}
+              errors={errors}
+              handleChange={handleChange}
+              handleFileChange={handleFileChange}
+              dragOver={dragOver}
+              setDragOver={setDragOver}
+              showDropdown={showDropdown}
+              setShowDropdown={setShowDropdown}
+              validateLeaveType={validateLeaveType}
+            />
           )}
-
-          {(activeTab === 1 || activeTab === 3) && (
-            <>
-              {/* Time Grid for Comp Off / OD */}
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    In Time <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="time"
-                    name="inTime"
-                    value={form.inTime}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.inTime
-                        ? "border-red-300"
-                        : "border-slate-200 hover:border-slate-300"
-                      }`}
-                  />
-                  {errors.inTime && (
-                    <p className="text-red-500 text-xs mt-1">{errors.inTime}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    Out Time <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="time"
-                    name="outTime"
-                    value={form.outTime}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.outTime
-                        ? "border-red-300"
-                        : "border-slate-200 hover:border-slate-300"
-                      }`}
-                  />
-                  {errors.outTime && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.outTime}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    Duration
-                  </label>
-                  <input
-                    value={
-                      form.inTime && form.outTime
-                        ? (() => {
-                          const [ih, im] = form.inTime.split(":");
-                          const [oh, om] = form.outTime.split(":");
-                          let mins =
-                            parseInt(oh) * 60 +
-                            parseInt(om) -
-                            (parseInt(ih) * 60 + parseInt(im));
-                          if (mins < 0) mins += 1440;
-                          const hours = Math.floor(mins / 60);
-                          const m = mins % 60;
-                          return `${hours.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
-                        })()
-                        : "--:--"
-                    }
-                    readOnly
-                    className="w-full p-4 rounded-xl border bg-slate-50 border-slate-200 text-sm text-slate-600 font-mono"
-                  />
-                </div>
-              </div>
-
-              {/* Dates */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    Start Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    value={form.startDate}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.startDate ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
-                  />
-                  {errors.startDate && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.startDate}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    End Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="endDate"
-                    value={form.endDate}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.endDate ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
-                  />
-                  {errors.endDate && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.endDate}
-                    </p>
-                  )}
-                </div>
-              </div>
-              {errors.dateOrder && (
-                <p className="text-red-500 text-xs col-span-2">
-                  {errors.dateOrder}
-                </p>
-              )}
-
-              {/* Reason */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-2">
-                  Reason <span className="text-red-500"></span>
-                </label>
-                <textarea
-                  name="reason"
-                  value={form.reason}
-                  onChange={handleChange}
-                  rows={4}
-                  className={`w-full p-4 rounded-xl border-2 resize-vertical text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.reason ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
-                />
-                {errors.reason && (
-                  <p className="text-red-500 text-xs mt-1">{errors.reason}</p>
-                )}
-              </div>
-            </>
+          {activeTab === 1 && (
+            <CompensatoryOffForm 
+              form={form}
+              errors={errors}
+              handleChange={handleChange}
+            />
           )}
-
           {activeTab === 2 && (
-            <>
-              {/* Time Grid for Gate Pass */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    value={form.startDate}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.startDate ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
-                  />
-                  {errors.startDate && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.startDate}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    In Time <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="time"
-                    name="inTime"
-                    value={form.inTime}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.inTime ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
-                  />
-                  {errors.inTime && (
-                    <p className="text-red-500 text-xs mt-1">{errors.inTime}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
-                    Out Time <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="time"
-                    name="outTime"
-                    value={form.outTime}
-                    onChange={handleChange}
-                    className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.outTime ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
-                  />
-                  {errors.outTime && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.outTime}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Reason */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-2">
-                  Reason <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="reason"
-                  value={form.reason}
-                  onChange={handleChange}
-                  rows={4}
-                  className={`w-full p-4 rounded-xl border-2 resize-vertical text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.reason ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
-                />
-                {errors.reason && (
-                  <p className="text-red-500 text-xs mt-1">{errors.reason}</p>
-                )}
-              </div>
-
-              {/* Document Upload */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-2">
-                  Supporting Document (Optional)
-                </label>
-                <div
-                  className={`p-8 border-2 border-dashed rounded-xl text-center transition-all duration-200 cursor-pointer flex flex-col items-center gap-3 ${dragOver ? "border-blue-400 bg-blue-25" : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"}`}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragOver(true);
-                  }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  <Upload className="w-8 h-8 text-slate-400" />
-                  {form.document ? (
-                    <p className="text-sm font-semibold text-emerald-600">
-                      {form.document.name}
-                    </p>
-                  ) : (
-                    <>
-                      <p className="text-sm text-slate-600 font-medium">
-                        Click to upload or drag & drop
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        PDF, JPG, PNG (Max 5MB)
-                      </p>
-                    </>
-                  )}
-                </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-            </>
+            <GatePassForm 
+              form={form}
+              errors={errors}
+              handleChange={handleChange}
+              handleFileChange={handleFileChange}
+              dragOver={dragOver}
+              setDragOver={setDragOver}
+            />
+          )}
+          {activeTab === 3 && (
+            <OnDutyForm 
+              form={form}
+              errors={errors}
+              handleChange={handleChange}
+            />
+          )}
+          {errors.dateOrder && (
+            <p className="text-red-500 text-xs">
+              {errors.dateOrder}
+            </p>
           )}
 
           {/* Submit Button */}
