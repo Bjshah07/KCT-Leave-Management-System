@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../context/AuthContext"
+import Loader from "../components/Loader"
 import StatsCards from "../components/StatsCards"
 import ApprovalBanner from "../components/ApprovalBanner"
 import RecentRequests from "../components/RecentRequests"
@@ -35,7 +36,11 @@ export default function Dashboard() {
     fetchDashboardData()
   }, [])
 
-  if (loading) return <div className="text-center py-16 text-slate-400">Loading dashboard...</div>
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 p-8">
+      <Loader size={56} message="Loading dashboard..." />
+    </div>
+  )
   if (error) return <div className="text-center py-16 text-red-500">Error: {error}</div>
   return (
     <>

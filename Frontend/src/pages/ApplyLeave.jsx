@@ -8,6 +8,7 @@ import LeaveRequestForm from "./forms/LeaveRequestForm";
 import CompensatoryOffForm from "./forms/CompensatoryOffForm";
 import GatePassForm from "./forms/GatePassForm";
 import OnDutyForm from "./forms/OnDutyForm";
+import Loader from "../components/Loader";
 
 const LEAVE_TYPES = [
   "Annual Leave",
@@ -236,8 +237,8 @@ export default function ApplyLeave() {
               setForm({ ...form, leaveType: "", inTime: "", outTime: "" });
             }}
             className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeTab === index
-                ? "bg-blue-600 text-white shadow-md"
-                : "bg-white border border-slate-200 hover:border-blue-300 hover:shadow-sm text-slate-700"
+              ? "bg-blue-600 text-white shadow-md"
+              : "bg-white border border-slate-200 hover:border-blue-300 hover:shadow-sm text-slate-700"
               }`}
           >
             {tab}
@@ -256,7 +257,7 @@ export default function ApplyLeave() {
 
         <div className="space-y-6">
           {activeTab === 0 && (
-            <LeaveRequestForm 
+            <LeaveRequestForm
               form={form}
               errors={errors}
               handleChange={handleChange}
@@ -269,14 +270,14 @@ export default function ApplyLeave() {
             />
           )}
           {activeTab === 1 && (
-            <CompensatoryOffForm 
+            <CompensatoryOffForm
               form={form}
               errors={errors}
               handleChange={handleChange}
             />
           )}
           {activeTab === 2 && (
-            <GatePassForm 
+            <GatePassForm
               form={form}
               errors={errors}
               handleChange={handleChange}
@@ -286,7 +287,7 @@ export default function ApplyLeave() {
             />
           )}
           {activeTab === 3 && (
-            <OnDutyForm 
+            <OnDutyForm
               form={form}
               errors={errors}
               handleChange={handleChange}
@@ -305,16 +306,14 @@ export default function ApplyLeave() {
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 text-lg transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             {loading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Submitting...
-              </>
+              <Loader size={20} message="Submitting..." />
             ) : (
               <>
                 <Send className="w-5 h-5" />
                 Submit {TABS[activeTab]} Request
               </>
-            )}
+            )
+            }
           </button>
         </div>
       </div>

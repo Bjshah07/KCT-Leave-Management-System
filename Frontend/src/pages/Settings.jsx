@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../context/AuthContext"
+import Loader from "../components/Loader"
 import { Camera, Pencil, Check, X } from "lucide-react"
 
 export default function Settings() {
@@ -154,8 +155,8 @@ export default function Settings() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-100">
-        <div className="text-lg">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen p-8">
+        <Loader size="xl" message="Loading settings..." />
       </div>
     )
   }

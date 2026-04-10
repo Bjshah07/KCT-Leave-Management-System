@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../context/AuthContext"
+import Loader from "../components/Loader"
 
 const filters = ["All", "Pending", "Approved", "Rejected"]
 
@@ -88,10 +89,9 @@ export default function MyLeave() {
 
       {/* ── MOBILE CARD VIEW (shown below md) ── */}
       <div className="flex flex-col gap-3 md:hidden">
-        {loading ? (
-          <div className="text-center py-16 text-slate-400 bg-white rounded-2xl">
-            <p className="text-4xl mb-3">⏳</p>
-            <p className="text-sm font-medium">Loading your leaves...</p>
+{loading ? (
+          <div className="p-8">
+            <Loader size="lg" message="Loading your leaves..." />
           </div>
         ) : error ? (
           <div className="text-center py-16 text-red-400 bg-white rounded-2xl">
@@ -157,9 +157,8 @@ export default function MyLeave() {
       {/* ── DESKTOP TABLE VIEW (shown on md+) ── */}
       <div className="hidden md:block bg-white rounded-2xl shadow-sm overflow-hidden transition-colors duration-300">
         {loading ? (
-          <div className="text-center py-16 text-slate-400">
-            <p className="text-4xl mb-3">⏳</p>
-            <p className="text-sm font-medium">Loading your leaves...</p>
+          <div className="p-8">
+            <Loader size="lg" message="Loading your leaves..." />
           </div>
         ) : error ? (
           <div className="text-center py-16 text-red-400">

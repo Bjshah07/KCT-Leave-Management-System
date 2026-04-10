@@ -63,8 +63,9 @@ export default function Header({ setSidebarOpen }) {
             <span className="hidden md:block text-slate-400 text-xl ml-1">›</span>
           </div>
         ) : (
-          <div className="text-sm font-semibold text-slate-800 leading-tight">
-            Loading...
+          <div className="flex items-center gap-2 px-2 py-1 rounded-xl bg-slate-50">
+            <div className="w-5 h-5 border-2 border-slate-400 border-t-slate-600 rounded-full animate-spin"></div>
+            <span className="text-xs font-medium text-slate-500">Loading...</span>
           </div>
         )}
 
