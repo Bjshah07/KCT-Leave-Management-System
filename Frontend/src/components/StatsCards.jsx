@@ -54,7 +54,7 @@ export default function StatsCards({ stats = [] }) {
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform ${card.bgColor}`}>
                   <UserRound className="w-5 h-5" />
                 </div>
-                <span className={`text-2xl font-bold text-slate-800`}>{remaining}</span>
+              <span className={`text-2xl font-bold text-slate-800 `}>{remaining}</span>
               </div>
               <div>
                 <h4 className="font-semibold text-sm text-slate-700 mb-1 truncate">{card.label}</h4>

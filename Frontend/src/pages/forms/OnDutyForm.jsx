@@ -21,7 +21,7 @@ export default function OnDutyForm({
       {/* Time Grid for OD */}
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-2">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-2">
             In Time <span className="text-red-500">*</span>
           </label>
           <input
@@ -29,9 +29,9 @@ export default function OnDutyForm({
             name="inTime"
             value={form.inTime}
             onChange={handleChange}
-            className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.inTime
+            className={`w-full p-4 rounded-xl border-2 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.inTime
                 ? "border-red-300"
-                : "border-slate-200 hover:border-slate-300"
+                : "border-slate-200 dark:border-gray-600 hover:border-slate-300 dark:hover:border-gray-500"
               }`}
           />
           {errors.inTime && (
@@ -39,7 +39,7 @@ export default function OnDutyForm({
           )}
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-2">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-2">
             Out Time <span className="text-red-500">*</span>
           </label>
           <input
@@ -47,9 +47,9 @@ export default function OnDutyForm({
             name="outTime"
             value={form.outTime}
             onChange={handleChange}
-            className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.outTime
+            className={`w-full p-4 rounded-xl border-2 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.outTime
                 ? "border-red-300"
-                : "border-slate-200 hover:border-slate-300"
+                : "border-slate-200 dark:border-gray-600 hover:border-slate-300 dark:hover:border-gray-500"
               }`}
           />
           {errors.outTime && (
@@ -59,13 +59,13 @@ export default function OnDutyForm({
           )}
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-2">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-2">
             Duration
           </label>
           <input
             value={calculateDuration()}
             readOnly
-            className="w-full p-4 rounded-xl border bg-slate-50 border-slate-200 text-sm text-slate-600 font-mono"
+            className="w-full p-4 rounded-xl border bg-slate-50 border-slate-200 text-sm text-slate-600 dark:text-slate-200 dark:bg-gray-700 dark:border-gray-600 font-mono"
           />
         </div>
       </div>
@@ -73,7 +73,7 @@ export default function OnDutyForm({
       {/* Dates */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-2">
+          <label className="block text-xs font-semibold dark:text-slate-200 text-slate-700 mb-2">
             Start Date <span className="text-red-500">*</span>
           </label>
           <input
@@ -81,7 +81,7 @@ export default function OnDutyForm({
             name="startDate"
             value={form.startDate}
             onChange={handleChange}
-            className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.startDate ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
+            className={`w-full p-4 rounded-xl border-2 dark:border-gray-600 text-slate-700 dark:text-slate-200 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.startDate ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
           />
           {errors.startDate && (
             <p className="text-red-500 text-xs mt-1">
@@ -90,7 +90,7 @@ export default function OnDutyForm({
           )}
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-2">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-2">
             End Date <span className="text-red-500">*</span>
           </label>
           <input
@@ -98,7 +98,7 @@ export default function OnDutyForm({
             name="endDate"
             value={form.endDate}
             onChange={handleChange}
-            className={`w-full p-4 rounded-xl border-2 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.endDate ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
+            className={`w-full p-4 rounded-xl border-2 dark:border-gray-600 text-slate-700 dark:text-slate-200 text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.endDate ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
           />
           {errors.endDate && (
             <p className="text-red-500 text-xs mt-1">
@@ -110,7 +110,7 @@ export default function OnDutyForm({
 
       {/* Reason */}
       <div>
-        <label className="block text-xs font-semibold text-slate-700 mb-2">
+        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-2">
           Reason for On Duty <span className="text-red-500"></span>
         </label>
         <textarea
@@ -119,7 +119,7 @@ export default function OnDutyForm({
           onChange={handleChange}
           rows={4}
           placeholder="Provide detailed reason for on duty request..."
-          className={`w-full p-4 rounded-xl border-2 resize-vertical text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.reason ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
+          className={`w-full p-4 rounded-xl dark:border-gray-600 text-slate-700 dark:text-slate-200 border-2 resize-vertical text-sm focus:outline-none focus:border-blue-500 transition-all ${errors.reason ? "border-red-300" : "border-slate-200 hover:border-slate-300"}`}
         />
         {errors.reason && (
           <p className="text-red-500 text-xs mt-1">{errors.reason}</p>

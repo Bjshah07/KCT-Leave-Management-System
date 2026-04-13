@@ -221,14 +221,14 @@ export default function ApplyLeave() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Apply for Leave</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Apply for Leave</h1>
         <p className="text-sm text-slate-400 mt-1">
           Submit a new leave request
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap -mx-1.5 gap-3 *:m-1.5!">
         {TABS.map((tab, index) => (
           <button
             key={tab}
@@ -237,8 +237,8 @@ export default function ApplyLeave() {
               setForm({ ...form, leaveType: "", inTime: "", outTime: "" });
             }}
             className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeTab === index
-              ? "bg-blue-600 text-white shadow-md"
-              : "bg-white border border-slate-200 hover:border-blue-300 hover:shadow-sm text-slate-700"
+            ? "bg-blue-600 text-white shadow-md"
+              : "bg-white dark:bg-gray-800/50 border border-slate-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-400 hover:shadow-sm text-slate-700 dark:text-slate-200"
               }`}
           >
             {tab}
@@ -247,10 +247,10 @@ export default function ApplyLeave() {
       </div>
 
       {/* Form Card */}
-      <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-slate-100 dark:border-gray-700">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-2 h-8 bg-linear-to-b from-blue-500 to-blue-600 rounded-full" />
-          <h3 className="text-lg font-bold text-slate-800">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">
             {TABS[activeTab]}
           </h3>
         </div>
@@ -322,13 +322,13 @@ export default function ApplyLeave() {
         position="top-right"
         autoClose={4000}
         hideProgressBar={false}
-        newestOnTop
+        newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark"
       />
     </div>
   );
