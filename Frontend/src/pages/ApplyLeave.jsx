@@ -136,6 +136,7 @@ export default function ApplyLeave() {
       }
 
       toast.success("Leave request submitted successfully!");
+      localStorage.setItem('leaveStatus', 'applied');
       setSubmitted(true);
     } catch (error) {
       console.error("Submit error:", error);

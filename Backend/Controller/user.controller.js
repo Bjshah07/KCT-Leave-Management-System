@@ -1,7 +1,7 @@
 import User from "../Models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../middleware/auth.js";
-import sendCredentialsEmail from "../utils/sendEmail.js";
+import { sendCredentialsEmail } from "../utils/sendEmail.js";
 
 const handleUserSignup = async (req, res) => {
     try {

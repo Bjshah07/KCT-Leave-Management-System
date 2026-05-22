@@ -1,4 +1,6 @@
 import Leave from "../Models/leave.model.js";
+import User from "../Models/user.model.js";
+import { sendLeaveNotification } from "../utils/sendEmail.js";
 
 const getMyLeaves = async (req, res) => {
   try {
@@ -69,6 +71,18 @@ const createLeave = async (req, res) => {
     };
 
     const leave = await Leave.create(leaveData);
+
+    // Send notifications to approvers
+    try {
+      const populatedLeave = await Leave.findById(leave._id).populate('user', 'fullName');
+      const approvers = await User.find({ designation: { $in: ['Manager', 'HR'] } }, 'email fullName');
+      if (approvers.length > 0) {
+        await sendLeaveNotification(leave._id, approvers);
+      }
+    } catch (emailError) {
+      console.error('Email notification failed:', emailError);
+      // Don't fail the leave creation
+    }
 
     res.status(201).json({
       message: "Leave request submitted successfully",

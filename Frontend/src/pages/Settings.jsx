@@ -2,10 +2,13 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../context/AuthContext"
 import Loader from "../components/Loader"
 import { Camera, Pencil, Check, X } from "lucide-react"
+import { uploadAvatarToCloudinary } from "../utils/uploadAvatar"
 
 export default function Settings() {
   const { user, loading: authLoading } = useAuth()
   const [profile, setProfile] = useState(null)
+  const [avatarSaving, setAvatarSaving] = useState(false)
+
   const [editValues, setEditValues] = useState({})
   const [isEditing, setIsEditing] = useState(false)
   const [passwords, setPasswords] = useState({
@@ -27,7 +30,7 @@ export default function Settings() {
         phone: user.phoneNumber,
         designation: user.designation,
         empId: user.logInID || 'N/A',
-        avatar: 'https://i.pravatar.cc/100?img=12' // Static for now
+        avatar: user.avatarUrl || 'https://i.pravatar.cc/100?img=12' // fallback
       })
       setEditValues({
         fullName: user.fullName,
@@ -144,12 +147,32 @@ export default function Settings() {
     }
   }
 
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const url = URL.createObjectURL(file)
-      setProfile(prev => ({ ...prev, avatar: url }))
-      setEditValues(prev => ({ ...prev, avatar: url }))
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      setAvatarSaving(true)
+      const token = localStorage.getItem('token')
+      const previewUrl = URL.createObjectURL(file)
+      setProfile(prev => ({ ...prev, avatar: previewUrl }))
+
+      const data = await uploadAvatarToCloudinary({ file, token })
+
+      setProfile(prev => ({
+        ...prev,
+        avatar: data?.data?.avatarUrl || previewUrl
+      }))
+
+      // ensure future saves show correct avatar
+      setEditValues(prev => ({
+        ...prev,
+        avatar: data?.data?.avatarUrl || previewUrl
+      }))
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setAvatarSaving(false)
     }
   }
 
