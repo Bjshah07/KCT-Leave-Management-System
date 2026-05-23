@@ -115,7 +115,15 @@ export default function ApplyLeave() {
       const formData = new FormData();
       formData.append("leaveType", submitLeaveType);
       formData.append("startDate", form.startDate);
-      formData.append("endDate", form.endDate);
+
+      // Backend validation currently requires `endDate` for all leave types.
+      // Gate Pass UX uses only a single date (startDate), so map it to endDate.
+      const submitEndDate =
+        activeTab === 2 && (!form.endDate || form.endDate === "")
+          ? form.startDate
+          : form.endDate; // add 1 day to make endDate inclusive
+      formData.append("endDate", submitEndDate);
+
 
       // Backend expects `reason` always
       const trimmedReason = (form.reason || "").trim();
@@ -155,7 +163,6 @@ export default function ApplyLeave() {
       const data = await response.json();
 
       if (!response.ok) {
-        console.log("Error response data:", data);
         throw new Error(data.message || "Submission failed");
       }
 
@@ -275,7 +282,7 @@ export default function ApplyLeave() {
               }));
             }}
             className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeTab === index
-            ? "bg-blue-600 text-white shadow-md"
+              ? "bg-blue-600 text-white shadow-md"
               : "bg-white dark:bg-gray-800/50 border border-slate-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-400 hover:shadow-sm text-slate-700 dark:text-slate-200"
               }`}
           >
@@ -348,7 +355,7 @@ export default function ApplyLeave() {
             ) : (
               <>
                 <Send className="w-5 h-5" />
-                Submit {TABS[activeTab]==="Leave Request" ? "Leave" : TABS[activeTab]} Request
+                Submit {TABS[activeTab] === "Leave Request" ? "Leave" : TABS[activeTab]} Request
               </>
             )
             }

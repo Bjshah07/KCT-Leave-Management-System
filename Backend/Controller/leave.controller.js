@@ -47,7 +47,7 @@ const createLeave = async (req, res) => {
       return res.status(400).json({ message: "All fields required" });
     }
 
-    if (new Date(startDate) >= new Date(endDate)) {
+    if (new Date(startDate) > new Date(endDate)) {
       return res.status(400).json({ message: "Start date must be before end date" });
     }
 
