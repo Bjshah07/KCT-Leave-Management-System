@@ -24,13 +24,23 @@ export default function Settings() {
 
   useEffect(() => {
     if (user && !authLoading) {
+      const initials = user.fullName
+        ? user.fullName
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .slice(0, 2)
+            .toUpperCase()
+        : 'JD' 
+
       setProfile({
         name: user.fullName,
         email: user.email,
         phone: user.phoneNumber,
         designation: user.designation,
         empId: user.logInID || 'N/A',
-        avatar: user.avatarUrl || 'https://i.pravatar.cc/100?img=12' // fallback
+        avatar: user.avatarUrl || "",
+        initials
       })
       setEditValues({
         fullName: user.fullName,
@@ -231,11 +241,22 @@ export default function Settings() {
         {/* Avatar + Name */}
         <div className="flex items-center gap-4 mb-6">
           <div className="relative shrink-0">
-            <img
-              src={profile.avatar}
-              alt="avatar"
-              className="w-16 h-16 lg:w-20 lg:h-20 rounded-full object-cover ring-4 ring-slate-100"
-            />
+            {profile.avatar ? (
+              <img
+                src={profile.avatar}
+                alt="avatar"
+                className="w-16 h-16 lg:w-20 lg:h-20 rounded-full object-cover ring-4 ring-slate-100"
+              />
+            ) : (
+              <div
+                className="w-16 h-16 lg:w-20 lg:h-20 rounded-full ring-4 ring-slate-100 bg-blue-600 flex items-center justify-center"
+                aria-label="avatar initials"
+              >
+                <span className="text-white font-bold text-xl">
+                  {profile.initials}
+                </span>
+              </div>
+            )}
             <input
               id="avatarInput"
               type="file"

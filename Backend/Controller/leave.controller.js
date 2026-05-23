@@ -43,7 +43,7 @@ const createLeave = async (req, res) => {
     const userId = req.user._id;
 
     // Validation
-    if (!leaveType || !startDate || !endDate || !reason) {
+    if (!leaveType || !startDate || !endDate || !reason ) {
       return res.status(400).json({ message: "All fields required" });
     }
 

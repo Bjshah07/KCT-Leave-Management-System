@@ -35,7 +35,7 @@ const uploadAvatar = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       { avatarUrl: uploadRes.secure_url },
-      { new: true }
+      { returnDocument: 'after' }
     )
 
     res.json({

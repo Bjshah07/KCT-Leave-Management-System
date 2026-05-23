@@ -1,5 +1,5 @@
-1. Profile pic in Header and setting 
-2. Store img into cloudinary
+1. Profile pic in Header and setting                                                --> Done
+2. Store img into cloudinary                                                        --> Done
 3. Leave applications document into cloudinary of LeaveRequest and GatePass
-4. Theme toggle button      --> Done
-5. Hover color in tables in Dashboard and MyLeave       --> Done
+4. Theme toggle button                                                              --> Done
+5. Hover color in tables in Dashboard and MyLeave                                   --> Done

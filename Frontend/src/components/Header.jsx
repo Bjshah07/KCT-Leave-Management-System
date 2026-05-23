@@ -70,9 +70,17 @@ export default function Header({ setSidebarOpen }) {
             onClick={() => navigate("/settings")}
             className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 px-2 py-1 rounded-xl transition-colors duration-200"
           >
-            <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover ring-2 ring-slate-200 bg-linear-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-              {user.fullName ? user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'JD'}
-            </div>
+            {user.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt="profile"
+                className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover ring-2 ring-slate-200 bg-linear-to-r from-blue-500 to-blue-600"
+              />
+            ) : (
+              <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover ring-2 ring-slate-200 bg-linear-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+                {user.fullName ? user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'JD'}
+              </div>
+            )}
             <div className="hidden md:block">
               <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 leading-tight">
                 {user.fullName || 'User'}
