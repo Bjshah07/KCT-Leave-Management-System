@@ -89,7 +89,17 @@ export default function Sidebar() {
       </div>
 
       {/* Logout */}
-      <button className="w-full flex items-center gap-3 bg-red-600 text-white px-4 py-3 rounded-xl hover:bg-red-700 transition">
+      <button
+        className="w-full flex items-center gap-3 bg-red-600 text-white px-4 py-3 rounded-xl hover:bg-red-700 transition"
+        onClick={async () => {
+          try {
+            const { adminLogout } = await import("../utils/adminLogout");
+            await adminLogout();
+          } finally {
+            window.location.href = "/login";
+          }
+        }}
+      >
         <LuLogOut /> Logout
       </button>
     </div>

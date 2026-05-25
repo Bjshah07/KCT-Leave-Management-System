@@ -7,35 +7,50 @@ import Header from "./Components/Header";
 import LeaveRequests from "./Pages/LeaveRequests";
 import LeaveBalance from "./Pages/LeaveBalance";
 import Settings from "./Pages/Settings";
+import AdminLogin from "./Pages/AdminLogin";
+import ProtectedRoute from "./Components/ProtectedRoute";
+
+
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex h-screen bg-gray-100">
-        {/* Sidebar */}
-        <div className="w-64 shrink-0">
-          <Sidebar />
-        </div>
+      <Routes>
+        <Route path="/login" element={<AdminLogin />} />
 
-        {/* Right Side */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header */}
-          <Header />
-          <div className="flex-1 p-6 overflow-y-auto">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/employees" element={<EmployeeManagement />} />
-              <Route path="/leaves" element={<LeaveRequests />} />
-              <Route path="/balance" element={<LeaveBalance />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <div className="flex h-screen bg-gray-100">
+                {/* Sidebar */}
+                <div className="w-64 shrink-0">
+                  <Sidebar />
+                </div>
+
+                {/* Right Side */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  {/* Header */}
+                  <Header />
+                  <div className="flex-1 p-6 overflow-y-auto">
+                    <Routes>
+                      <Route index element={<Dashboard />} />
+                      <Route path="employees" element={<EmployeeManagement />} />
+                      <Route path="leaves" element={<LeaveRequests />} />
+                      <Route path="balance" element={<LeaveBalance />} />
+                      <Route path="settings" element={<Settings />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </div>
+                </div>
+              </div>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+
