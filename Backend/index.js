@@ -7,7 +7,8 @@ import userRouter from './Routes/user.route.js';
 import authRouter from './Routes/auth.route.js';
 import leaveRouter from './Routes/leave.route.js';
 import avatarRouter from './Routes/avatar.route.js';
-
+import employeeRouter from './Routes/employee.route.js';
+import employeeManagementRouter from './Routes/employeeManagement.route.js';
 
 // Initialize Express app
 const app = express()
@@ -28,7 +29,11 @@ connectDB(process.env.MONGO_URI);
 app.use("/api/user", userRouter)
 app.use("/api/auth", authRouter);
 app.use("/api", avatarRouter);
+app.use("/api/employees", employeeRouter);
+app.use("/api/employee-management", employeeManagementRouter);
+
 app.use("/api/leave", leaveRouter);
+
 
 
 app.listen(PORT, () => {

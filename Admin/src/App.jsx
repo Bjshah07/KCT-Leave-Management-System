@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./Pages/Dashboard";
 import EmployeeManagement from "./Pages/EmployeeManagement";
+import EditEmployee from "./Pages/EditEmployee";
+
 import Sidebar from "./Components/Sidebar";
 import Header from "./Components/Header";
 import LeaveRequests from "./Pages/LeaveRequests";
@@ -36,6 +38,8 @@ function App() {
                     <Routes>
                       <Route index element={<Dashboard />} />
                       <Route path="employees" element={<EmployeeManagement />} />
+                      <Route path="employees/edit" element={<EditEmployee />} />
+
                       <Route path="leaves" element={<LeaveRequests />} />
                       <Route path="balance" element={<LeaveBalance />} />
                       <Route path="settings" element={<Settings />} />

@@ -1,12 +1,51 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
 const Header = () => {
+  const [adminProfile, setAdminProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!res.ok) throw new Error("Failed to load profile");
+
+        const data = await res.json();
+        setAdminProfile(data);
+      } catch (e) {
+        // Keep UI safe if profile can't be loaded.
+        setAdminProfile(null);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const initials = useMemo(() => {
+    const name = adminProfile?.fullName || adminProfile?.name;
+    if (!name || typeof name !== "string") return "ER";
+
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    const first = parts[0]?.[0] || "E";
+    const second = parts[1]?.[0] || parts[0]?.[1] || "R";
+
+    return (first + second).toUpperCase();
+  }, [adminProfile]);
+
+  const displayName = adminProfile?.fullName || adminProfile?.name || "Admin";
+  const displayRole = adminProfile?.role || "HR Admin";
+
   return (
-    <div className="bg-white px-4 sm:px-6 py-3 flex items-center justify-between  ">
-      
+    <div className="bg-white px-4 sm:px-6 py-3 flex items-center justify-between">
       {/* Search */}
       <div className="w-full max-w-md relative">
         <input
@@ -21,7 +60,6 @@ const Header = () => {
 
       {/* Right Section */}
       <div className="flex items-center gap-4 sm:gap-6 ml-4">
-        
         {/* Notification */}
         <div className="relative cursor-pointer">
           <FaBell className="text-gray-600 text-lg hover:text-blue-500 transition" />
@@ -33,14 +71,16 @@ const Header = () => {
         {/* Profile */}
         <div className="flex items-center gap-3 cursor-pointer">
           <div className="w-8 h-8 bg-blue-500 text-white flex items-center justify-center rounded-full font-semibold">
-            ER
+            {loadingProfile ? "..." : initials}
           </div>
 
           <div className="hidden sm:block">
-            <p className="text-sm font-semibold">Emily Rodriguez</p>
-            <p className="text-xs text-gray-500">HR Admin</p>
+            <p className="text-sm font-semibold">
+              {loadingProfile ? "Loading..." : displayName}
+            </p>
+            <p className="text-xs text-gray-500">{displayRole}</p>
           </div>
-          <RiArrowDropDownLine className="text-2xl"/>
+          <RiArrowDropDownLine className="text-2xl" />
         </div>
       </div>
     </div>
@@ -48,3 +88,4 @@ const Header = () => {
 };
 
 export default Header;
+
