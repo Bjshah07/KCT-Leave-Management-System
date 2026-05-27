@@ -1,2 +1,6 @@
 1. Login page for admin                             --> Done
 2. Emplyoee backend connection
+3. LoggedIn admin detail in header
+4. leave request db connection
+5. leave balance manage
+6. backend email notification change

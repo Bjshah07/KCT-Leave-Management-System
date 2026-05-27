@@ -1,4 +1,5 @@
 import User from "../Models/user.model.js";
+import Admin from "../Models/admin.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../middleware/auth.js";
 import { sendCredentialsEmail } from "../utils/sendEmail.js";
@@ -79,38 +80,45 @@ const handleUserLogin = async (req, res) => {
             return res.status(400).json({ message: "login ID and password are required" });
         }
 
-        // Admin role + predefined credentials check FIRST
-        // so login does not depend on an existing User document.
+        // Admin login via MongoDB `admins` collection.
+        // If `role` is provided, we authenticate as an admin.
         if (role) {
             const allowedRoles = ["HR", "Manager", "Director"];
             if (!allowedRoles.includes(role)) {
                 return res.status(400).json({ message: "Invalid role" });
             }
 
-            const credsByRole = {
-                HR: {
-                    loginId: process.env.ADMIN_HR_LOGIN_ID,
-                    password: process.env.ADMIN_HR_PASSWORD,
-                },
-                Manager: {
-                    loginId: process.env.ADMIN_MANAGER_LOGIN_ID,
-                    password: process.env.ADMIN_MANAGER_PASSWORD,
-                },
-                Director: {
-                    loginId: process.env.ADMIN_DIRECTOR_LOGIN_ID,
-                    password: process.env.ADMIN_DIRECTOR_PASSWORD,
-                },
-            };
-
-            const expected = credsByRole[role];
-
-            if (logInID !== expected.loginId || logInPassword !== expected.password) {
+            const admin = await Admin.findOne({ logInID, role });
+            if (!admin) {
                 return res.status(403).json({ message: "Invalid admin credentials for selected role" });
             }
 
-            // Now authenticate against stored user designation if a DB user exists.
-            // If DB user does not exist, we still allow login for admin.
+            // Stored as plaintext in your DB.
+            if (logInPassword !== admin.logInPassword) {
+                return res.status(403).json({ message: "Invalid admin credentials for selected role" });
+            }
+
+            const token = generateToken(admin._id);
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 30 * 24 * 60 * 60 * 1000
+            });
+           
+            return res.status(200).json({
+                message: "Login successful",
+                token,
+                data: {
+                    role: admin.role,
+                    logInID: admin.logInID,
+                    fullName: admin.fullName,
+                    email: admin.email,
+                }
+            });
         }
+
 
         const user = await User.findOne({ logInID }).select("+logInPassword");
         if (!user) {

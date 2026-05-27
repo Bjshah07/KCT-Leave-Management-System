@@ -19,7 +19,7 @@ function App() {
         <Route path="/login" element={<AdminLogin />} />
 
         <Route
-          path="/"
+          path="/*"
           element={
             <ProtectedRoute>
               <div className="flex h-screen bg-gray-100">
