@@ -5,7 +5,7 @@
     c. leave balance
     d. edit and delete functionality                --> Done
 3. LoggedIn admin detail in header                  --> Done
-4. leave request db connection
+4. leave request db connection                      --> Done
 5. leave balance manage
 6. backend email notification change
 7. dark theme 
