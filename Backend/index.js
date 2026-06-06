@@ -10,6 +10,7 @@ import avatarRouter from './Routes/avatar.route.js';
 import employeeRouter from './Routes/employee.route.js';
 import employeeManagementRouter from './Routes/employeeManagement.route.js';
 import leaveAdminRouter from './Routes/leaveAdmin.route.js';
+import leaveBalanceAdminRouter from './Routes/leaveBalanceAdmin.route.js';
 
 // Initialize Express app
 const app = express()
@@ -35,6 +36,7 @@ app.use("/api/employee-management", employeeManagementRouter);
 
 app.use("/api/leave", leaveRouter);
 app.use("/api/leave", leaveAdminRouter);
+app.use("/api/leave", leaveBalanceAdminRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`)
