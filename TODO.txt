@@ -2,7 +2,7 @@
 2. Emplyoee backend connection
     a. fix avatar img                               --> Done
     b. remove role                                  --> Done
-    c. leave balance
+    c. address                                      --> Done
     d. edit and delete functionality                --> Done
 3. LoggedIn admin detail in header                  --> Done
 4. leave request db connection                      --> Done

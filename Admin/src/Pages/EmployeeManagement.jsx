@@ -134,7 +134,7 @@ export default function EmployeeManagement() {
                 <th>Employee ID</th>
                 <th>Department</th>
                 {/* <th>Role</th> */}
-                <th>Leave Balance</th>
+                <th>Address</th>
                 <th>Phone Number</th>
                 <th>Actions</th>
               </tr>
@@ -194,8 +194,7 @@ export default function EmployeeManagement() {
                     {/* <td className="text-gray-700">{emp.role}</td> */}
 
                     <td className="text-sm">
-                      <div>Annual: {emp.annual}</div>
-                      <div>Sick: {emp.sick}</div>
+                      <div>{emp.address}</div>
                     </td>
 
                     <td>

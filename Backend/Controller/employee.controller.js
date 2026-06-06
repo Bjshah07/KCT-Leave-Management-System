@@ -5,12 +5,9 @@ const mapToEmployee = (u) => ({
   name: u.fullName,
   email: u.email,
   dept: u.designation,
-  role: u.designation,
   avatar: u.avatarUrl,
   phoneNumber: u.phoneNumber,
   address: u.address,
-  annual: 10,
-  sick: 5,
   initials: (u.fullName || "")
     .split(" ")
     .filter(Boolean)
