@@ -9,16 +9,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const data = [
-  { name: "Jan", value: 12 },
-  { name: "Feb", value: 15 },
-  { name: "Mar", value: 8 },
-  { name: "Apr", value: 18 },
-  { name: "May", value: 22 },
-  { name: "Jun", value: 25 },
-];
-
-const Chart = () => {
+const Chart = ({ data = [] }) => {
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-xl">
       {/* Header */}
