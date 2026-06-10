@@ -1,6 +1,12 @@
 import Leave from "../Models/leave.model.js";
+import Admin from "../Models/admin.model.js";
 import User from "../Models/user.model.js";
 import { sendLeaveNotification } from "../utils/sendEmail.js";
+
+
+// NOTE: Existing implementation already emails leave notifications to approvers.
+// This task asks for admin UI notification icon as well, which is handled in the Admin UI.
+
 
 const getMyLeaves = async (req, res) => {
   try {
@@ -75,7 +81,11 @@ const createLeave = async (req, res) => {
     // Send notifications to approvers
     try {
       const populatedLeave = await Leave.findById(leave._id).populate('user', 'fullName');
-      const approvers = await User.find({ designation: { $in: ['Manager', 'HR'] } }, 'email fullName');
+      // Fetch approvers from the Admin collection (admins folder) instead of User model.
+      const approvers = await Admin.find(
+        { role: { $in: ["Manager", "HR","Director"] } },
+        "email fullName"
+      );
       if (approvers.length > 0) {
         await sendLeaveNotification(leave._id, approvers);
       }

@@ -78,7 +78,7 @@ const sendLeaveNotification = async (leaveId, approvers) => {
   }
 
   try {
-    const leave = await Leave.findById(leaveId).populate('user', 'fullName designation');
+    const leave = await Leave.findById(leaveId).populate('user', 'fullName designation logInID');
     if (!leave) return;
 
     const days = Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1;
