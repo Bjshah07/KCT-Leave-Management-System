@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FiSearch,
   FiCheckCircle,
@@ -178,92 +178,174 @@ export default function LeaveRequests() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow">
-
+      <div className="bg-white rounded-2xl shadow overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-500/40 font-semibold text-gray-800">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-500/40 font-semibold text-gray-800">
           All Leave Requests ({leaveData.length})
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="text-gray-500 text-sm border-b border-gray-500/40">
-              <tr>
-                <th className="p-4">Employee Login ID</th>
-                <th>Employee</th>
-                <th>Leave Type</th>
-                <th>Date Range</th>
-                <th>Days</th>
-                <th>Applied Date</th>
-                <th>Status</th>
-                <th>View</th>
-              </tr>
-            </thead>
+        {/* Desktop table (lg+) */}
+        <div className="hidden lg:block">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="text-gray-500 text-sm border-b border-gray-500/40">
+                <tr>
+                  <th className="p-4">Employee Login ID</th>
+                  <th>Employee</th>
+                  <th>Leave Type</th>
+                  <th>Date Range</th>
+                  <th>Days</th>
+                  <th>Applied Date</th>
+                  <th>Status</th>
+                  <th>View</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {filteredData.map((item) => (
+              <tbody>
+                {filteredData.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="border-b border-gray-500/40 hover:bg-gray-50"
+                  >
+                    <td className="p-4">
+                      <p className="font-medium">{item.employee?.logInID}</p>
+                    </td>
 
-                <tr key={item.id} className="border-b border-gray-500/40 hover:bg-gray-50">
-                  <td className="p-4">
-                    <p className="font-medium">{item.employee?.logInID}</p>
-                  </td>
-                  {console.log(item)}
-                  {/* Employee */}
-                  <td>
-                    <p className="font-medium">{item.employee?.name}</p>
-                    <p className="text-sm text-gray-500">{item.employee?.dept}</p>
-                  </td>
+                    {/* Employee */}
+                    <td>
+                      <p className="font-medium">{item.employee?.name}</p>
+                      <p className="text-sm text-gray-500">{item.employee?.dept}</p>
+                    </td>
 
-                  {/* Leave Type */}
-                  <td>
-                    <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                      {item.leaveType}
-                    </span>
-                  </td>
+                    {/* Leave Type */}
+                    <td>
+                      <span className="bg-gray-100 px-3 py-1 rounded-full text-sm whitespace-nowrap">
+                        {item.leaveType}
+                      </span>
+                    </td>
 
-                  {/* Start Date */}
-                  <td>
-                    {item.start_date} - {item.end_date}
-                  </td>
+                    {/* Date Range */}
+                    <td className="whitespace-nowrap">
+                      {item.start_date} - {item.end_date}
+                    </td>
 
-                  {/* Days */}
-                  <td>{item.days} days</td>
+                    {/* Days */}
+                    <td className="whitespace-nowrap">{item.days} days</td>
 
-                  {/* Applied */}
-                  <td>{item.applied}</td>
+                    {/* Applied */}
+                    <td className="whitespace-nowrap">{item.applied}</td>
 
-
-                  {/* Status */}
-                  <td>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm capitalize ${item.status === "approved"
-                        ? "bg-green-100 text-green-600"
-                        : item.status === "pending"
-                          ? "bg-orange-100 text-orange-500"
-                          : "bg-red-100 text-red-500"
+                    {/* Status */}
+                    <td>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm capitalize ${
+                          item.status === "approved"
+                            ? "bg-green-100 text-green-600"
+                            : item.status === "pending"
+                              ? "bg-orange-100 text-orange-500"
+                              : "bg-red-100 text-red-500"
                         }`}
-                    >
-                      {item.status}
-                    </span>
-                  </td>
+                      >
+                        {item.status}
+                      </span>
+                    </td>
 
-                  {/* Actions */}
-                  <td className="p-4">
+                    {/* Actions */}
+                    <td className="p-4 whitespace-nowrap">
+                      <button
+                        onClick={() => {
+                          setSelectedRequest(item);
+                          setViewModal(true);
+                        }}
+                        className="flex items-center gap-1 text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                        title="View details"
+                        aria-label={`View details for request ${item.id}`}
+                      >
+                        <FiEye />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Mobile list (below lg) */}
+        <div className="lg:hidden">
+          {filteredData.length === 0 ? (
+            <div className="p-6 text-center text-gray-500">No leave requests found.</div>
+          ) : (
+            <div className="divide-y divide-gray-500/40">
+              {filteredData.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-4 hover:bg-gray-50 transition"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm text-gray-500">Employee Login ID</p>
+                      <p className="font-medium truncate">{item.employee?.logInID}</p>
+
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">Employee</p>
+                        <p className="font-medium truncate">{item.employee?.name}</p>
+                        <p className="text-sm text-gray-500 truncate">{item.employee?.dept}</p>
+                      </div>
+                    </div>
+
                     <button
                       onClick={() => {
                         setSelectedRequest(item);
                         setViewModal(true);
                       }}
-                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                      className="shrink-0 flex items-center justify-center w-10 h-10 text-blue-600 hover:text-blue-800 bg-blue-50 rounded-xl hover:bg-blue-100"
                       title="View details"
+                      aria-label={`View details for request ${item.id}`}
                     >
                       <FiEye />
                     </button>
-                  </td>
-                </tr>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                      {item.leaveType}
+                    </span>
+
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm capitalize ${
+                        item.status === "approved"
+                          ? "bg-green-100 text-green-600"
+                          : item.status === "pending"
+                            ? "bg-orange-100 text-orange-500"
+                            : "bg-red-100 text-red-500"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 text-sm text-gray-700">
+                    <p className="text-gray-500">Date Range</p>
+                    <p className="font-medium">
+                      {item.start_date} - {item.end_date}
+                    </p>
+
+                    <div className="mt-2 flex flex-wrap gap-3">
+                      <div>
+                        <p className="text-gray-500">Days</p>
+                        <p className="font-medium">{item.days} days</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-500">Applied</p>
+                        <p className="font-medium">{item.applied}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
       </div>
       {viewModal && selectedRequest && (

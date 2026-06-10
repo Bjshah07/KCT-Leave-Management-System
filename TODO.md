@@ -1,4 +1,0 @@
-- [ ] Update Admin Chart component to be fully responsive (remove max-width, responsive heights)
-- [ ] Update Admin PieChartDept component to be fully responsive (remove max-width, responsive heights)
-- [ ] Update Admin app shell to hide sidebar on small screens (md breakpoint)
-- [ ] Verify Admin dashboard layout manually / run Admin dev server
