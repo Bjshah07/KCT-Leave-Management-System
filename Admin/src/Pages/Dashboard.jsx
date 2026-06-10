@@ -175,9 +175,9 @@ export default function Layout() {
   const cardValue = (num) => (loading ? "—" : String(num));
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="bg-gray-100 min-h-0">
       {/* Main Content */}
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="p-6 min-h-0">
         {/* Heading */}
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Dashboard Overview
@@ -197,7 +197,7 @@ export default function Layout() {
         ) : null}
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card
             title="Total Employees"
             value={cardValue(stats.totalEmployees)}

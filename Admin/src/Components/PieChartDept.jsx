@@ -6,18 +6,18 @@ const defaultColors = ["#2563eb", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6", "#
 const PieChartDept = ({ data = [] }) => {
   const normalized = Array.isArray(data) ? data : [];
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-xl">
+    <div className="bg-white p-6 rounded-2xl shadow-md w-full" style={{ minWidth: 0, minHeight: 1 }}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-2 h-8 bg-purple-600 rounded-full"></div>
+        <div className="w-2 h-8 bg-purple-600 rounded-full" />
         <h2 className="text-lg font-semibold text-gray-800">
           Department-wise Distribution
         </h2>
       </div>
 
       {/* Chart */}
-      <div className="relative w-full h-72 flex items-center justify-center">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="relative w-full h-64 sm:h-72 lg:h-80 flex items-center justify-center" style={{ minWidth: 0 }}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <PieChart>
             <Pie
               data={normalized}
@@ -38,7 +38,7 @@ const PieChartDept = ({ data = [] }) => {
         </ResponsiveContainer>
 
         {/* Simple fallback legend (avoids hardcoded positioned labels) */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-3 flex-wrap justify-center px-2">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-3 flex-wrap justify-center px-2">
           {normalized.slice(0, 6).map((entry, idx) => (
             <span
               key={idx}
