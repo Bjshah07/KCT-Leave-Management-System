@@ -1,6 +1,6 @@
 export const fetchAdminNotifications = async () => {
   const token = localStorage.getItem("token");
-  const res = await fetch("http://localhost:5000/api/notifications/admin", {
+  const res = await fetch("https://kct-leave-management-system-backend.onrender.com/api/notifications/admin", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -17,7 +17,7 @@ export const fetchAdminNotifications = async () => {
 
 export const markAdminNotificationsAsRead = async () => {
   const token = localStorage.getItem("token");
-  const res = await fetch("http://localhost:5000/api/notifications/admin/mark-read", {
+  const res = await fetch("https://kct-leave-management-system-backend.onrender.com/api/notifications/admin/mark-read", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

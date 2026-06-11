@@ -1,7 +1,7 @@
 export async function adminLogout() {
   try {
     // Backend logout route clears httpOnly cookie.
-    await fetch("http://localhost:5000/api/auth/logout", {
+    await fetch("https://kct-leave-management-system-backend.onrender.com/api/auth/logout", {
       method: "POST",
       credentials: "include",
     });

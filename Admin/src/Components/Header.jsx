@@ -11,7 +11,7 @@ const Header = ({ onOpenSidebar } = {}) => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/me", {
+        const res = await fetch("https://kct-leave-management-system-backend.onrender.com/api/auth/me", {
           method: "GET",
           credentials: "include",
         });

@@ -5,7 +5,7 @@ export async function uploadAvatarToCloudinary({ file, token }) {
   const formData = new FormData()
   formData.append('avatar', file)
 
-  const res = await fetch('http://localhost:5000/api/avatar', {
+  const res = await fetch('https://kct-leave-management-system-backend.onrender.com/api/avatar', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`

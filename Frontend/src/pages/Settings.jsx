@@ -60,7 +60,7 @@ export default function Settings() {
     try {
       setLoading(true)
       const token = localStorage.getItem('token')
-      const response = await fetch('http://localhost:5000/api/user/profile', {
+      const response = await fetch('https://kct-leave-management-system-backend.onrender.com/api/user/profile', {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -74,7 +74,7 @@ export default function Settings() {
       }
 
       // Refresh user data
-      const meResponse = await fetch('http://localhost:5000/api/auth/me', {
+      const meResponse = await fetch('https://kct-leave-management-system-backend.onrender.com/api/auth/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const updatedUser = await meResponse.json()
@@ -131,7 +131,7 @@ export default function Settings() {
 
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch('http://localhost:5000/api/user/change-password', {
+      const response = await fetch('https://kct-leave-management-system-backend.onrender.com/api/user/change-password', {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,

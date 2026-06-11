@@ -152,7 +152,7 @@ export default function ApplyLeave() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/leave/apply", {
+      const response = await fetch("https://kct-leave-management-system-backend.onrender.com/api/leave/apply", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

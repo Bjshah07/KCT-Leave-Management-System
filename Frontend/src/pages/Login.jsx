@@ -30,7 +30,7 @@ function Login() {
     toast.dismiss();
 
     try {
-      const response = await axios.post("http://localhost:5000/api/user/login", {
+      const response = await axios.post("https://kct-leave-management-system-backend.onrender.com/api/user/login", {
         logInID: employeeId,
         logInPassword: password
       }, { withCredentials: true });

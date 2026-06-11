@@ -16,7 +16,7 @@ export default function Dashboard() {
       try {
         setLoading(true)
         const token = localStorage.getItem('token')
-        const response = await fetch('http://localhost:5000/api/user/leave-balance', {
+        const response = await fetch('https://kct-leave-management-system-backend.onrender.com/api/user/leave-balance', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

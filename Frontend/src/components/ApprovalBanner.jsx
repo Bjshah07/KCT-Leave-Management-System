@@ -9,7 +9,7 @@ export default function ApprovalBanner({ status = "fresh" }) {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const response = await fetch("http://localhost:5000/api/leave/my-leaves", {
+      const response = await fetch("https://kct-leave-management-system-backend.onrender.com/api/leave/my-leaves", {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

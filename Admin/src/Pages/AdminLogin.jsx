@@ -32,7 +32,7 @@ export default function AdminLogin() {
       // Backend is currently user-login. We authenticate using logInID/logInPassword.
       // Role selection is validated/used server-side after backend changes.
       const response = await axios.post(
-        "http://localhost:5000/api/user/login",
+        "https://kct-leave-management-system-backend.onrender.com/api/user/login",
         {
           logInID: adminId,
           logInPassword: password,
