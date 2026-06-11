@@ -37,13 +37,15 @@ const getLeaveBalance = async (req, res) => {
       }
     ]);
 
-    const approved = statusCounts.find(s => s._id === 'approved')?.count || 0;
-    const pending = statusCounts.find(s => s._id === 'pending')?.count || 0;
+    const approved = statusCounts.find((s) => s._id === "approved")?.count || 0;
+    const pending = statusCounts.find((s) => s._id === "pending")?.count || 0;
+    const rejected = statusCounts.find((s) => s._id === "rejected")?.count || 0;
 
     res.json({
       balances: stats,
       approved,
-      pending
+      pending,
+      rejected,
     });
   } catch (error) {
     console.error(error);

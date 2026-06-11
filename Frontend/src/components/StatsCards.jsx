@@ -4,7 +4,8 @@ export default function StatsCards({ stats = [] }) {
   // Row 1: Status cards
   const statusCards = [
     { label: "Approved", count: stats.approved || 0, color: "border-emerald-500 text-emerald-700", bgColor: "bg-emerald-50" },
-    { label: "Pending", count: stats.pending || 0, color: "border-orange-500 text-orange-700", bgColor: "bg-orange-50" }
+    { label: "Pending", count: stats.pending || 0, color: "border-orange-500 text-orange-700", bgColor: "bg-orange-50" },
+    { label: "Rejected", count: stats.rejected || 0, color: "border-red-500 text-red-700", bgColor: "bg-red-50" }
   ];
 
   // Row 2: Leave balance cards
@@ -22,8 +23,8 @@ export default function StatsCards({ stats = [] }) {
 
   return (
     <div className="mb-8 space-y-6">
-      {/* ROW 1: Approved & Pending */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* ROW 1: Approved, Pending & Rejected */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {statusCards.map((card, index) => (
           <div key={index} className={`border-t-8 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200 ${card.color} ${card.bgColor}`}>
             <div className="flex items-center justify-between mb-4">

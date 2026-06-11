@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import Leave from '../Models/leave.model.js';
-import User from '../Models/user.model.js';
+// import User from '../Models/user.model.js'; // not needed for leave decision emails
 
 const sendCredentialsEmail = async (email, logInID, logInPassword, fullName) => {
   // Check required env vars
@@ -68,6 +68,92 @@ const sendCredentialsEmail = async (email, logInID, logInPassword, fullName) => 
   } catch (error) {
     console.error('❌ Email failed:', error.message);
     // Don't throw - signup continues
+  }
+};
+
+const sendLeaveDecisionEmail = async (leaveId, decision) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log('Email config missing - skipping leave decision email. Add EMAIL_USER/EMAIL_PASS to .env');
+    return;
+  }
+
+  if (!['approved', 'rejected'].includes(decision)) {
+    console.log(`Invalid leave decision "${decision}" - skipping email`);
+    return;
+  }
+
+  try {
+    const leave = await Leave.findById(leaveId).populate('user', 'fullName designation logInID email');
+    if (!leave?.user?.email) return;
+
+    const days =
+      leave.startDate && leave.endDate
+        ? Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1
+        : null;
+
+    const startDate = leave.startDate ? new Date(leave.startDate).toLocaleDateString('en-GB') : '';
+    const endDate = leave.endDate ? new Date(leave.endDate).toLocaleDateString('en-GB') : '';
+
+    const prettyDecision = decision === 'approved' ? 'Approved' : 'Rejected';
+    const headerBg = decision === 'approved' ? 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' : 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+    const statusTextColor = decision === 'approved' ? '#28a745' : '#dc3545';
+    const statusBorderColor = decision === 'approved' ? '#28a745' : '#dc3545';
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    const mailOptions = {
+      from: `"KCT Leave System" <${process.env.EMAIL_USER}>`,
+      to: leave.user.email,
+      subject: `Your Leave Request - ${prettyDecision}`,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: ${headerBg}; color: white; padding: 30px; text-align: center; border-radius: 12px 12px 0 0; }
+    .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 12px 12px; }
+    .leave-details { background: white; padding: 25px; border-radius: 10px; margin: 20px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .status { background: #fff; color: ${statusTextColor}; padding: 10px; border-radius: 6px; border-left: 4px solid ${statusBorderColor}; font-weight: 700; }
+    .footer { text-align: center; color: #666; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📄 Leave ${prettyDecision}</h1>
+    <p>Dear ${leave.user.fullName},</p>
+  </div>
+  
+  <div class="content">
+    <div class="leave-details">
+      <p><strong>📋 Type:</strong> ${leave.leaveType || ''}</p>
+      <p><strong>📅 Dates:</strong> ${startDate} to ${endDate}${days ? ` (${days} days)` : ''}</p>
+      ${leave.reason ? `<p><strong>📝 Reason:</strong> ${leave.reason}</p>` : ''}
+      <div class="status">
+        Status: ${prettyDecision}
+      </div>
+    </div>
+    
+    <p>You can view your leave status in the <a href="http://localhost:5173" style="color:#2354A2;">KCT Leave Management System</a>.</p>
+  </div>
+  
+  <div class="footer">
+    <p>KCT Leave Management System</p>
+  </div>
+</body>
+</html>`
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Leave decision email (${prettyDecision}) sent to ${leave.user.email}`);
+  } catch (error) {
+    console.error('❌ Leave decision email failed:', error.message);
   }
 };
 
@@ -149,5 +235,5 @@ const sendLeaveNotification = async (leaveId, approvers) => {
   }
 };
 
-export { sendCredentialsEmail, sendLeaveNotification };
+export { sendCredentialsEmail, sendLeaveDecisionEmail, sendLeaveNotification };
 

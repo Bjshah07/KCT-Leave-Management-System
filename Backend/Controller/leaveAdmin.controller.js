@@ -1,4 +1,5 @@
 import Leave from "../Models/leave.model.js";
+import { sendLeaveDecisionEmail } from "../utils/sendEmail.js";
 
 const toHumanDate = (d) => {
   if (!d) return null;
@@ -12,10 +13,8 @@ const toHumanDate = (d) => {
 
 const getAllLeaveRequests = async (req, res) => {
   try {
-    // NOTE: we don't restrict by admin role here because existing auth.js already
-    // authenticates either a User or Admin based on the token.
     const leaves = await Leave.find({})
-      .populate("user", "designation fullName logInID") // only get these fields from user
+      .populate("user", "designation fullName logInID")
       .sort({ createdAt: -1 })
       .lean();
 
@@ -64,9 +63,15 @@ const getAllLeaveRequests = async (req, res) => {
 const updateLeaveStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body || {};
 
-    if (!status || !["approved", "rejected"].includes(status)) {
+    const url = `${req.originalUrl || ""} ${req.path || ""}`.toLowerCase();
+    const status = url.includes("/approve")
+      ? "approved"
+      : url.includes("/reject")
+        ? "rejected"
+        : null;
+
+    if (!status) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
@@ -77,6 +82,14 @@ const updateLeaveStatus = async (req, res) => {
     ).lean();
 
     if (!updated) return res.status(404).json({ message: "Leave not found" });
+
+    // Send email best-effort; never block the API response
+    sendLeaveDecisionEmail(id, status).catch((e) => {
+      console.error(
+        "Leave decision email dispatch failed:",
+        e?.message || e
+      );
+    });
 
     return res.json({ message: "Leave status updated", leave: updated });
   } catch (error) {

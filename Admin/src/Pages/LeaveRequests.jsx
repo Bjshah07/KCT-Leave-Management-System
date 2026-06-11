@@ -461,6 +461,8 @@ export default function LeaveRequests() {
                 onClick={async () => {
                   try {
                     await rejectLeaveRequest(selectedRequest.id, {});
+                    // Update local banner status for the employee in the same browser session
+                    localStorage.setItem("leaveStatus", "rejected");
                     const res = await fetchLeaveRequests();
                     setLeaveData(Array.isArray(res?.leaves) ? res.leaves : []);
                     setSelectedRequest(null);
@@ -478,6 +480,8 @@ export default function LeaveRequests() {
                 onClick={async () => {
                   try {
                     await approveLeaveRequest(selectedRequest.id);
+                    // Update local banner status for the employee in the same browser session
+                    localStorage.setItem("leaveStatus", "approved");
                     const res = await fetchLeaveRequests();
                     setLeaveData(Array.isArray(res?.leaves) ? res.leaves : []);
                     setSelectedRequest(null);
