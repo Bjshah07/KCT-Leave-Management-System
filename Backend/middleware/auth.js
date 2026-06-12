@@ -13,17 +13,22 @@ const verifyToken = async (req, res, next) => {
         let token;
         const authHeader = req.headers.authorization;
 
-        // NOTE: For debugging 401s in production (Render), check whether the cookie is being received.
-        // Remove/disable these logs after fixing.
-        console.log('[auth.verifyToken] incoming', {
-            authorizationHeaderPresent: !!authHeader,
-            cookiesPresent: !!req.cookies,
-            cookieTokenPresent: !!req.cookies?.token,
-            cookieKeys: req.cookies ? Object.keys(req.cookies) : [],
-        });
+        // // NOTE: For debugging 401s in production (Render), check whether the cookie is being received.
+        // // Remove/disable these logs after fixing.
+        // console.log('[auth.verifyToken] incoming', {
+        //     authorizationHeaderPresent: !!authHeader,
+        //     cookiesPresent: !!req.cookies,
+        //     cookieTokenPresent: !!req.cookies?.token,
+        //     cookieKeys: req.cookies ? Object.keys(req.cookies) : [],
+        // });
 
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-            token = authHeader.substring(7);
+        if (authHeader) {
+            if (authHeader.startsWith('Bearer ')) {
+                token = authHeader.substring(7);
+            } else {
+                // Support clients that send the raw token in Authorization header
+                token = authHeader.trim();
+            }
         } else if (req.cookies.token) {
             token = req.cookies.token;
         }
@@ -56,7 +61,7 @@ const verifyToken = async (req, res, next) => {
         req.user = admin;
         next();
     } catch (error) {
-        console.log('[auth.verifyToken] error', error?.name, error?.message);
+        // console.log('[auth.verifyToken] error', error?.name, error?.message);
         res.status(401).json({ message: "Invalid token" });
     }
 };

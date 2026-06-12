@@ -1,21 +1,25 @@
 import nodemailer from 'nodemailer';
 import Leave from '../Models/leave.model.js';
-// import User from '../Models/user.model.js'; // not needed for leave decision emails
+
+const createGmailTransporter = () => {
+  return nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // SSL
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+};
 
 const sendCredentialsEmail = async (email, logInID, logInPassword, fullName) => {
-  // Check required env vars
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.log('Email config missing - skipping email. Add EMAIL_USER/EMAIL_PASS to .env');
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
+  const transporter = createGmailTransporter();
 
   const mailOptions = {
     from: `"KCT Leave System" <${process.env.EMAIL_USER}>`,
@@ -39,34 +43,35 @@ const sendCredentialsEmail = async (email, logInID, logInPassword, fullName) => 
     <h1>🎉 Welcome ${fullName}!</h1>
     <p>Your KCT Leave Management account is ready</p>
   </div>
-  
+
   <div class="content">
     <h2>Your Login Credentials</h2>
     <div class="credentials">
       <p><strong>👤 Login ID:</strong></p>
       <p style="font-size: 18px; font-weight: bold; color: #2354A2; margin: 5px 0;">${logInID}</p>
-      
+
       <p><strong>🔑 Password:</strong></p>
       <p style="font-size: 18px; font-weight: bold; color: #e74c3c; margin: 5px 0; letter-spacing: 1px;">${logInPassword}</p>
     </div>
-    
+
     <a href="https://kct-leave-management-system-frontend.onrender.com/login" class="btn" style="color: #fff">Login Now →</a>
     <p style="color: #666; font-style: italic;">Please change your password after first login</p>
   </div>
-  
+
   <div class="footer">
     <p>KCT Leave Management System</p>
     <p>If you didn't create this account, ignore this email</p>
   </div>
 </body>
-</html>`
+</html>
+    `,
   };
 
   try {
     await transporter.sendMail(mailOptions);
     console.log(`✅ Welcome email sent to ${email}`);
   } catch (error) {
-    console.error('❌ Email failed:', error.message);
+    console.error('❌ Email failed:', error?.message || error);
     // Don't throw - signup continues
   }
 };
@@ -95,17 +100,14 @@ const sendLeaveDecisionEmail = async (leaveId, decision) => {
     const endDate = leave.endDate ? new Date(leave.endDate).toLocaleDateString('en-GB') : '';
 
     const prettyDecision = decision === 'approved' ? 'Approved' : 'Rejected';
-    const headerBg = decision === 'approved' ? 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' : 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+    const headerBg =
+      decision === 'approved'
+        ? 'linear-gradient(135deg, #28a745 0%, #20c997 100%)'
+        : 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
     const statusTextColor = decision === 'approved' ? '#28a745' : '#dc3545';
     const statusBorderColor = decision === 'approved' ? '#28a745' : '#dc3545';
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    const transporter = createGmailTransporter();
 
     const mailOptions = {
       from: `"KCT Leave System" <${process.env.EMAIL_USER}>`,
@@ -129,7 +131,7 @@ const sendLeaveDecisionEmail = async (leaveId, decision) => {
     <h1>📄 Leave ${prettyDecision}</h1>
     <p>Dear ${leave.user.fullName},</p>
   </div>
-  
+
   <div class="content">
     <div class="leave-details">
       <p><strong>📋 Type:</strong> ${leave.leaveType || ''}</p>
@@ -139,21 +141,22 @@ const sendLeaveDecisionEmail = async (leaveId, decision) => {
         Status: ${prettyDecision}
       </div>
     </div>
-    
+
     <p>You can view your leave status in the <a href="https://kct-leave-management-system-frontend.onrender.com" style="color:#2354A2;">KCT Leave Management System</a>.</p>
   </div>
-  
+
   <div class="footer">
     <p>KCT Leave Management System</p>
   </div>
 </body>
-</html>`
+</html>
+      `,
     };
 
     await transporter.sendMail(mailOptions);
     console.log(`✅ Leave decision email (${prettyDecision}) sent to ${leave.user.email}`);
   } catch (error) {
-    console.error('❌ Leave decision email failed:', error.message);
+    console.error('❌ Leave decision email failed:', error?.message || error);
   }
 };
 
@@ -167,17 +170,12 @@ const sendLeaveNotification = async (leaveId, approvers) => {
     const leave = await Leave.findById(leaveId).populate('user', 'fullName designation logInID');
     if (!leave) return;
 
-    const days = Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1;
+    const days =
+      Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1;
     const startDate = new Date(leave.startDate).toLocaleDateString('en-GB');
     const endDate = new Date(leave.endDate).toLocaleDateString('en-GB');
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    const transporter = createGmailTransporter();
 
     for (const approver of approvers) {
       const mailOptions = {
@@ -203,7 +201,7 @@ const sendLeaveNotification = async (leaveId, approvers) => {
     <h1>📄 New Leave Request</h1>
     <p>Action required from ${approver.fullName}</p>
   </div>
-  
+
   <div class="content">
     <div class="leave-details">
       <h3>👤 Employee: ${leave.user.fullName}</h3>
@@ -216,24 +214,24 @@ const sendLeaveNotification = async (leaveId, approvers) => {
         <strong>Status: Pending Approval</strong>
       </div>
     </div>
-    
+
     <p>Awaiting your review in the <a href="https://kct-leave-management-system-admin.onrender.com/admin" class="btn">Admin Dashboard</a></p>
   </div>
-  
+
   <div class="footer">
     <p>KCT Leave Management System</p>
   </div>
 </body>
-</html>`
+</html>
+        `,
       };
 
       await transporter.sendMail(mailOptions);
       console.log(`✅ Leave notification sent to ${approver.email}`);
     }
   } catch (error) {
-    console.error('❌ Leave notification failed:', error.message);
+    console.error('❌ Leave notification failed:', error?.message || error);
   }
 };
 
 export { sendCredentialsEmail, sendLeaveDecisionEmail, sendLeaveNotification };
-
