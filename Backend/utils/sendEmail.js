@@ -50,7 +50,7 @@ const sendCredentialsEmail = async (email, logInID, logInPassword, fullName) => 
       <p style="font-size: 18px; font-weight: bold; color: #e74c3c; margin: 5px 0; letter-spacing: 1px;">${logInPassword}</p>
     </div>
     
-    <a href="http://localhost:5173/login" class="btn" style="color: #fff">Login Now →</a>
+    <a href="https://kct-leave-management-system-frontend.onrender.com/login" class="btn" style="color: #fff">Login Now →</a>
     <p style="color: #666; font-style: italic;">Please change your password after first login</p>
   </div>
   
@@ -140,7 +140,7 @@ const sendLeaveDecisionEmail = async (leaveId, decision) => {
       </div>
     </div>
     
-    <p>You can view your leave status in the <a href="http://localhost:5173" style="color:#2354A2;">KCT Leave Management System</a>.</p>
+    <p>You can view your leave status in the <a href="https://kct-leave-management-system-frontend.onrender.com" style="color:#2354A2;">KCT Leave Management System</a>.</p>
   </div>
   
   <div class="footer">
@@ -217,7 +217,7 @@ const sendLeaveNotification = async (leaveId, approvers) => {
       </div>
     </div>
     
-    <p>Awaiting your review in the <a href="http://localhost:5173/admin" class="btn">Admin Dashboard</a></p>
+    <p>Awaiting your review in the <a href="https://kct-leave-management-system-admin.onrender.com/admin" class="btn">Admin Dashboard</a></p>
   </div>
   
   <div class="footer">

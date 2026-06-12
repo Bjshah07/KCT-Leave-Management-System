@@ -20,7 +20,12 @@ const PORT = process.env.PORT || 5000
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', "http://192.168.246.1:5173"],
+  origin: [
+    'http://localhost:5173', 
+    "http://192.168.246.1:5173",
+    "https://kct-leave-management-system-admin.onrender.com",
+    "https://kct-leave-management-system-frontend.onrender.com"
+  ],
   credentials: true
 }))  // Enable CORS for frontend with credentials
 app.use(express.json())  // Parse JSON bodies
