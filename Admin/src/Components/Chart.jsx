@@ -11,7 +11,7 @@ import {
 
 const Chart = ({ data = [] }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-md w-full" style={{ minWidth: 0, minHeight: 1 }}>
+    <div className="bg-white p-6 rounded-2xl shadow-md w-full">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-2 h-8 bg-blue-600 rounded-full"></div>
@@ -19,8 +19,11 @@ const Chart = ({ data = [] }) => {
       </div>
 
       {/* Chart */}
-      <div className="w-full h-64 sm:h-72 lg:h-80" style={{ minWidth: 0 }}>
-        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+      <div
+        className="w-full h-64 sm:h-72 lg:h-80"
+        style={{ minWidth: 0 }}
+      >
+        <ResponsiveContainer width="100%" height={320} minWidth={0}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />

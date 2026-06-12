@@ -16,10 +16,17 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("https://kct-leave-management-system-backend.onrender.com/api/auth/me", {
-          method: "GET",
-          credentials: "include",
-        });
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          "https://kct-leave-management-system-backend.onrender.com/api/auth/me",
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Authorization: token ? `Bearer ${token}` : undefined,
+            },
+          }
+        );
 
         if (!res.ok) throw new Error("Failed to load profile");
 

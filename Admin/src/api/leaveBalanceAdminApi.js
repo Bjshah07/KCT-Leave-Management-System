@@ -5,6 +5,15 @@ const api = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Admin: get all employee leave balances.
 // Note: backend currently does not implement this route; it will be added
 // as part of this change.

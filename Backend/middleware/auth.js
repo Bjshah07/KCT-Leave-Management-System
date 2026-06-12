@@ -12,13 +12,30 @@ const verifyToken = async (req, res, next) => {
     try {
         let token;
         const authHeader = req.headers.authorization;
+
+        // NOTE: For debugging 401s in production (Render), check whether the cookie is being received.
+        // Remove/disable these logs after fixing.
+        console.log('[auth.verifyToken] incoming', {
+            authorizationHeaderPresent: !!authHeader,
+            cookiesPresent: !!req.cookies,
+            cookieTokenPresent: !!req.cookies?.token,
+            cookieKeys: req.cookies ? Object.keys(req.cookies) : [],
+        });
+
         if (authHeader && authHeader.startsWith('Bearer ')) {
             token = authHeader.substring(7);
         } else if (req.cookies.token) {
             token = req.cookies.token;
         }
+
         if (!token) {
-            return res.status(401).json({ message: "No token, authorization denied" });
+            return res.status(401).json({
+                message: "No token, authorization denied",
+                debug: {
+                    hasAuthHeader: !!authHeader,
+                    hasCookieToken: !!req.cookies?.token,
+                },
+            });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -39,6 +56,7 @@ const verifyToken = async (req, res, next) => {
         req.user = admin;
         next();
     } catch (error) {
+        console.log('[auth.verifyToken] error', error?.name, error?.message);
         res.status(401).json({ message: "Invalid token" });
     }
 };
